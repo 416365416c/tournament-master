@@ -1,2 +1,7 @@
-TODO: ME!
-server is c++/cgi and client is c++/qml. Shared code for dealing with data objects in the common directory.
+App for running small local tournaments, preferably of Starcraft.
+
+Server is c++/cgi and client is c++/qml.
+Shared code for dealing with data objects in the common directory.
+The new engin.io thing looks cool, but I already had a cgi app...
+
+Note that the XML format is not "cascades-compatible"
