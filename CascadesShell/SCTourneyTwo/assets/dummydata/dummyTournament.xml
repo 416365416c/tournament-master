@@ -1,0 +1,24 @@
+<Tournament name="dummyTournament" desc="This one is for app testing.">
+<Match mId="0" winTo="0" loseTo="0" title="dummy" player1="Dummzor" player2="Dumma" winner="" p1approves="false" p2approves="false" schedule="2013-07-07T12:00:00" p1race="Z" p2race="P"/>
+<MatchGroup title="Championship" >
+<Match title="Finals" player1="???" player2="???" winner="" p1approves="false" p2approves="false" schedule="Wednesday 2130"/>
+<Match title="Semi-Final 1" player1="" player2="" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Semi-Final 2" player1="" player2="" winner="" p1approves="false" p2approves="false" schedule=""/>
+</MatchGroup>
+<MatchGroup title="Ro4" >
+<Match title="Quarter Final 1" player1="" player2="" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Quarter Final 2" player1="" player2="Tassadar" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Quarter Final 3" player1="" player2="" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Quarter Final 4" player1="Zeratul" player2="" winner="" p1approves="false" p2approves="false" schedule=""/>
+</MatchGroup>
+<MatchGroup title="Ro8">
+<Match title="Round 1 Match 1" player1="Gerard DuGalle" player2="Raynor" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 2" player1="Duran" player2="Zasz" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 3" player1="Alexis Stukov" player2="Edmund Duke" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 4" player1="Tassadar" player2="Mengsk" winner="Tassadar" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 5" player1="Kerrigan" player2="Artanis" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 6" player1="Daggoth" player2="Fenix" winner="" p1approves="false" p2approves="false" schedule=""/>
+<Match title="Round 1 Match 7" player1="Zeratul" player2="" winner="Zeratul" p1approves="false" p2approves="false" schedule=""/>
+</MatchGroup>
+</Tournament>
+

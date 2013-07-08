@@ -28,6 +28,10 @@ public:
 	bb::cascades::GroupDataModel* mtwo() { return m_m2; }
 public Q_SLOTS:
 	void loadEvent(const QString &name); //triggers fetching of model #2
+	void confirmSchedule(int mId, bool doit = true);
+	void setWinner(int mId, int which);
+	void setSchedule(QDateTime t);
+	void registerPlayer(QString title, QString name, QString email, QString race);
 Q_SIGNALS:
 	void loadedOneChanged();
 	void loadedTwoChanged();

@@ -10,46 +10,53 @@ NavigationPane {
         }
 
         Container {
-            layout: DockLayout {}
             ActivityIndicator {
-                id: loadThing
+                id: ai
                 onCreationCompleted: {
-                    loadThing.start();
-                    appData.loadedOneChanged.connect(loadThing.stop());
+                    ai.start();
                 }
-                preferredWidth: 600
             }
             ListView {
-                visible: appData.loadedOne
-                dataModel: appData.modelOne == null ? null : appData.modelOne
-                layout: GridListLayout {
-                    columnCount: 3
-                    headerMode: ListHeaderMode.Standard
+                dataModel: XmlDataModel {
+                    id: dataModel
+                    source: "dummydata/dummyTournamentList.xml"
                 }
                 listItemComponents: [
                     ListItemComponent {
-                        type: "header" //This has to be the worst way to do section headers!
+                        type: "eventGroup"
                         Header { title: ListItemData.title }
                     },
                     ListItemComponent {
-                        type: "item"
+                        type: "tournament"
                         StandardListItem {
-                            title: ListItemData.title
-                            imageSource: "asset:///images/event.png"
+                            id: slic
+                            title: ListItemData.name
+                            description: ListItemData.subTitle
+                            status: ListItemData.time
+                            imageSource: ListItemData.imgSrc
                         }
                     }
                 ]
+                onTriggered: {
+                    var itemData = dataModel.data(indexPath);
+                    var pg2 = secondPageDefinition.createObject();
+                    pg2.xmlSrc = itemData.source;
+                    pg2.imgSrc = itemData.imgSrc;
+                    pg2.title = itemData.name;
+                    pg2.time = itemData.time;
+                    pg2.description = itemData.desc;
+                    navigationPane.push(pg2);
+                }
             }
         }
 
         actions: ActionItem {
-            title: qsTr("Lanch Pg 2") + Retranslate.onLocaleOrLanguageChanged
+            title: qsTr("Info Page") + Retranslate.onLocaleOrLanguageChanged
             ActionBar.placement: ActionBarPlacement.OnBar
 
             onTriggered: {
                 // A second Page is created and pushed when this action is triggered.
-                appData.loadEvent("Alpha Test");
-                navigationPane.push(secondPageDefinition.createObject());
+                navigationPane.push(infoPageDefinition.createObject());
             }
         }
     }
@@ -58,7 +65,11 @@ NavigationPane {
         // Definition of the second Page, used to dynamically create the Page above.
         ComponentDefinition {
             id: secondPageDefinition
-            source: "DetailsPage.qml"
+            source: "TournamentPage.qml"
+        },
+        ComponentDefinition {
+            id: infoPageDefinition
+            source: "InfoPage.qml"
         }
     ]
 

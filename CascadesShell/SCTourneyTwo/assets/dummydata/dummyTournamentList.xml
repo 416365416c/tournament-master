@@ -1,0 +1,18 @@
+<mandatoryRoot>
+<eventGroup title="Future">
+	<tournament name="dummytournament A" source="dummydata/dummyTournament.xml" desc="I am the very model of a modern major general. I've information vegetable, animal and mineral. I know the kings of england and I quote the fights historical - from Marathon to Waterloo in order categorical!" subTitle="first test" time="July" imgSrc="images/event.png"/>
+	<tournament name="dummytournament B" source="notyet" imgSrc="images/placeholder.png" time="" desc="" subTitle=""/>
+</eventGroup><eventGroup title="Present">
+	<tournament name="dummytournament P" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament P" source="dummydata/dummytournament.xml" />
+	</eventGroup>
+	<eventGroup title="Past">
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+	<tournament name="dummytournament Z" source="dummydata/dummytournament.xml" />
+</eventGroup>
+</mandatoryRoot>

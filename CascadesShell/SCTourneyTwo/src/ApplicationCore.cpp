@@ -22,3 +22,16 @@ ApplicationCore::~ApplicationCore() {
 void ApplicationCore::loadEvent(const QString &name) {
 
 }
+
+void ApplicationCore::confirmSchedule(int mId, bool doit) {
+}
+
+void ApplicationCore::setWinner(int mId, int which) {
+}
+
+void ApplicationCore::setSchedule(QDateTime t) {
+}
+
+void ApplicationCore::registerPlayer(QString title, QString name,
+		QString email, QString race) {
+}
