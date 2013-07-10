@@ -59,6 +59,8 @@ int main(int argc, char *argv[])
     QString lockFilePath = QDir::tempPath() + "/" + targetFile.split('/').last() + ".lock";
     if(QFile::exists(lockFilePath)){
         printf("FAIL - Error Lock File");
+    } else if(!QFile::exists(targetFile)){
+            printf("FAIL - Error File not Found");
     } else if (request != "edit") {
         printf("FAIL - Unknown request");
     } else {//Should we do decent error handling also?
@@ -77,7 +79,12 @@ int main(int argc, char *argv[])
 
         QObject* o = 0;
         if (input.contains("matchIndex")) {
-            Match* m = t->matchAt(input.value("matchIndex").toInt());
+            int idx = input.value("matchIndex").toInt();
+            if (idx == -1) {
+                idx = t->matchCount();
+                t->addEmptyMatch();
+            }
+            Match* m = t->matchAt(idx);
             goingOkay = goingOkay && m;
             goingOkay = (1==input.remove("matchIndex"));
             //Treat winner specially, this sets up the future matches
@@ -121,10 +128,10 @@ int main(int argc, char *argv[])
             xml.open(QFile::WriteOnly | QFile::Text);
             xml.write(t->writeToXml().constData());
             printf("DONE");
-            lockFile.remove();
         }else{
             printf("FAIL - Error WTF");
         }
+        lockFile.remove();
     }
     printf("\n");
     return 0;
