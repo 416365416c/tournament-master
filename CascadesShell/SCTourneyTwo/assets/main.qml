@@ -50,7 +50,7 @@ NavigationPane {
             }
         }
 
-        actions: ActionItem {
+        actions:[ ActionItem {
             title: qsTr("Info Page") + Retranslate.onLocaleOrLanguageChanged
             ActionBar.placement: ActionBarPlacement.OnBar
 
@@ -59,6 +59,17 @@ NavigationPane {
                 navigationPane.push(infoPageDefinition.createObject());
             }
         }
+        , ActionItem {
+            title: qsTr("Settings Page") + Retranslate.onLocaleOrLanguageChanged
+            ActionBar.placement: ActionBarPlacement.OnBar
+            
+            onTriggered: {
+                // A second Page is created and pushed when this action is triggered.
+                navigationPane.push(settingsPageDefinition.createObject());
+            }
+        }
+    
+    ]
     }
 
     attachedObjects: [
@@ -70,6 +81,10 @@ NavigationPane {
         ComponentDefinition {
             id: infoPageDefinition
             source: "InfoPage.qml"
+        },
+        ComponentDefinition {
+            id: settingsPageDefinition
+            source: "settingsPage.qml"
         }
     ]
 
