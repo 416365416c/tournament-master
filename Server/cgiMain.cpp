@@ -17,6 +17,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+    printf("Content-type: text/plain\r\n\r\n");
 
     QByteArray in;
     int tmp;
@@ -24,11 +25,12 @@ int main(int argc, char *argv[])
         in.append(QChar(tmp));
     if(!in.contains(QByteArray("password=")+QByteArray(SHARED_PASSWORD))){//Invalid invocation
         printf("FAIL - Authentication Error\n");
+        printf("DEBUG -" + in + "\n");
+        printf("DEBUG -" + QByteArray("password=")+QByteArray(SHARED_PASSWORD) +"\n");
         return 0;
     }
 
     QMap<QString, QString> input;
-    printf("Content-type: text/plain\r\n\r\n");
     QSettings settings("xmlPaths.ini", QSettings::IniFormat);
     if(!in.contains('&')){//Invalid invocation
         printf("FAIL - Error Invalid Input\n");
