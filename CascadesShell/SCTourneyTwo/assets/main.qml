@@ -14,13 +14,17 @@ NavigationPane {
                 id: ai
                 onCreationCompleted: {
                     ai.start();
+                    appData.loadedOneChanged.connect(ai.stop());
                 }
             }
             ListView {
+                /*
                 dataModel: XmlDataModel {
                     id: dataModel
                     source: "dummydata/dummyTournamentList.xml"
                 }
+                */
+                dataModel: appData.tournamentsModel;
                 listItemComponents: [
                     ListItemComponent {
                         type: "eventGroup"
@@ -33,14 +37,15 @@ NavigationPane {
                             title: ListItemData.name
                             description: ListItemData.subTitle
                             status: ListItemData.time
-                            imageSource: ListItemData.imgSrc
+                            imageSource: "images/" + ListItemData.eventType + ".png"
                         }
                     }
                 ]
                 onTriggered: {
                     var itemData = dataModel.data(indexPath);
+                    appData.loadEvent(itemData.name);
                     var pg2 = secondPageDefinition.createObject();
-                    pg2.xmlSrc = itemData.source;
+                    //pg2.xmlSrc = itemData.source;
                     pg2.imgSrc = itemData.imgSrc;
                     pg2.title = itemData.name;
                     pg2.time = itemData.time;

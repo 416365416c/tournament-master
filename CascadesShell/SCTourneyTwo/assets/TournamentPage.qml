@@ -2,7 +2,7 @@ import bb.cascades 1.2
 
 Page {
     id: container
-    property url xmlSrc: "notyet"
+    //property url xmlSrc: "notyet"
     property url imgSrc: "images/event.png"
     property string description: "Non-descript event"
     property string time: "Somewhen"
@@ -24,7 +24,7 @@ Page {
             textStyle.fontStyle: FontStyle.Italic
         }
         Button {
-            visible: container.xmlSrc == "asset:///notyet"
+            visible: container.status == "signup"
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Bottom
             text: "Sign me up!"
@@ -34,10 +34,13 @@ Page {
         }
         ListView {
             id: matchView
-            visible: container.xmlSrc != "asset:///notyet"
+            visible: container.status != "signup"
+            /*
             dataModel: XmlDataModel {
                 source: container.xmlSrc
             }
+            */
+            dataModel: appData.matchesModel
             listItemComponents: [
                 ListItemComponent {
                     type: "Match"

@@ -8,6 +8,8 @@ Page {
         "title" : "Dummy Data",
         "p1race" : "Z",
         "p2race" : "Z",
+        "schedule" : "",
+        "winner" : "",
         "active" : true
     }
     onMobjChanged: {

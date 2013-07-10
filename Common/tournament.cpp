@@ -10,6 +10,8 @@
 Tournament::Tournament(QObject *parent) :
     QObject(parent)
 {
+    m_type = QLatin1String("hidden");//hidden,sc2,ahgl,lol,arcade
+    m_status = QLatin1String("signup");//signup,active,done
     addEmptyPlayer();
     _players[0]->setEmail("none@none.none");
     _players[0]->setName("Absent");
@@ -303,6 +305,7 @@ void Tournament::loadFromXml(QByteArray xml)
             m_time = reader.attributes().value("time").toString();
             m_subTitle = reader.attributes().value("subT").toString();
             m_eventType = reader.attributes().value("type").toString();
+            m_status = reader.attributes().value("stat").toString();
         }else if(reader.name() == "Player"){
             Player* p = new Player(this);
             p->m_name = reader.attributes().value("name").toString();
@@ -370,6 +373,7 @@ QByteArray Tournament::writeToXml() const
     writer.writeAttribute("time", m_time);
     writer.writeAttribute("subT", m_subTitle);
     writer.writeAttribute("type", m_eventType);
+    writer.writeAttribute("stat", m_status);
     foreach(Player* p, _players){
         if (p->getId() == 0)
             continue;

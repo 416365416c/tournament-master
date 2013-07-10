@@ -23,6 +23,7 @@ class Tournament : public QObject
     Q_PROPERTY(QString subTitle READ subTitle WRITE setSubTitle NOTIFY subTitleChanged);
     Q_PROPERTY(QString time READ time WRITE setTime NOTIFY timeChanged);
     Q_PROPERTY(QString eventType READ type WRITE setType NOTIFY typeChanged);
+    Q_PROPERTY(QString status READ status WRITE setStatus NOTIFY statusChanged);
 #ifndef NO_DECLARATIVE
     Q_PROPERTY(QMLLIST<Player> players READ players NOTIFY playersChanged);
     Q_PROPERTY(QMLLIST<Match> matches READ matches NOTIFY matchesChanged);
@@ -68,6 +69,11 @@ public:
         return m_eventType;
     }
 
+    QString status() const
+    {
+        return m_status;
+    }
+
 signals:
     void nameChanged();
     void playersChanged();
@@ -80,6 +86,8 @@ signals:
     void timeChanged(QString arg);
 
     void typeChanged(QString arg);
+
+    void statusChanged(QString arg);
 
 public slots:
     void shufflePlayerOrder();
@@ -119,6 +127,14 @@ public slots:
         }
     }
 
+    void setStatus(QString arg)
+    {
+        if (m_status != arg) {
+            m_status = arg;
+            emit statusChanged(arg);
+        }
+    }
+
 private:
     QString _name;
     QList<Player*> _players;
@@ -127,6 +143,7 @@ private:
     QString m_subTitle;
     QString m_time;
     QString m_eventType;
+    QString m_status;
 };
 
 

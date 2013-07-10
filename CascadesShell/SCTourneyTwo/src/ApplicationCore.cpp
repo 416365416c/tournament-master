@@ -9,7 +9,7 @@
 #include <QtNetwork>
 
 ApplicationCore::ApplicationCore(QObject* parent) : QObject(parent)
-	, m_manager(0)
+	, m_manager(0)//TODO: https!
 	, m_server("http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com/cgi-bin/tournamentCgi")
 	, m_l1(false)
 	, m_l2(false)
@@ -63,17 +63,22 @@ void ApplicationCore::handleNetworkReply(QNetworkReply* reply)
 void ApplicationCore::generateModelOne()
 {
 	QStringList tps;
-	tps << "name" << "description" << "subTitle" << "time" << "eventType";
+    //tps << "name" << "description" << "subTitle" << "time" << "eventType" << "status";
+    tps << "status" << "eventType" << "name";
 	m_m1 = new GroupDataModel(tps);
 	foreach(Tournament* t, m_ts)
-		m_m1->insert(t);
+        if (t->type() != "hidden")
+            m_m1->insert(t);
 	emit modelOneChanged();
 	m_l1=true;
 	emit loadedOneChanged();
 
+    //Note that I don't think refs will work, so we're converting to variant map here
 	QStringList mps;
-	mps << "index" << "winnerTo" << "loserTo" << "title" << "player1" << "player2" << "winner" << "done" << "schConf" << "schedule";
+	//mps << "index" << "p1race" << "p2race" << "title" << "player1" << "player2" << "winner" << "schedule" << "active";
+	mps << "index";
 	m_m2 = new GroupDataModel(mps);
+    m_m2->setGrouping(ItemGrouping::None);
 	loadEvent(m_ts[0]->name());
 	m_l2 = true;
 	emit loadedTwoChanged();
@@ -88,8 +93,23 @@ void ApplicationCore::loadEvent(const QString &name) {
 	m_currentTIdx = i;
 	j=0;
 	m_m2.clear();
-	while(j<m_ts[i]->matchCount())
-		m_m2->insert(m_ts[i]->matchAt[j++]);
+	while(j<m_ts[i]->matchCount()) {
+        QVariantMap map;
+		Match* m = m_ts[i]->matchAt[j++];
+        map["index"] = m->index();
+        map["title"] = m->title();
+        map["winner"] = m->winner() ? m->winner()->name() : QString();
+        map["schedule"] = m->schedule();
+
+        map["player1"] = m->player1() ? m->player1()->name() : QLatin1String("???");
+        map["player2"] = m->player2() ? m->player2()->name() : QLatin1String("???");
+        map["p1race"] = m->player1() ? m->player1()->race() : QLatin1String("R");
+        map["p2race"] = m->player2() ? m->player2()->race() : QLatin1String("R");
+
+        map["active"] = m_ts[i]->status() == QString("active");
+
+        m_m2->insert(map);
+    }
 	emit modelTwoChanged();
 }
 
@@ -98,13 +118,24 @@ void ApplicationCore::confirmSchedule(int mId, bool doit) {
 }
 
 void ApplicationCore::setWinner(int mId, int which) {
+    Match *m = m_ts[m_currentTIdx]->matchAt(mId);
+    QString winnerName;
+    if (which == 1)
+        winnerName = m->player1()->name();
+    else
+        winnerName = m->player2()->name();
+	serverUpdate(QString("matchIndex=%1&winner=%2").arg(mId).arg(winnerName));
 }
 
 void ApplicationCore::setSchedule(QDateTime t) {
+	serverUpdate(QString("matchIndex=%1&schedule=%2").arg(mId).arg(t.toString(Qt::ISODate)));
 }
 
 void ApplicationCore::registerPlayer(QString title, QString name,
 		QString email, QString race) {
+    Q_UNUSED(title); //we loaded this event already...
+	serverUpdate(QString("playerIndex=-1&name=%1&email=%2&race=%3")
+        .arg(name).arg(email).arg(race));
 }
 
 void ApplicationCore::changeServer(const QUrl& url) {
@@ -114,7 +145,11 @@ void ApplicationCore::changeServer(const QUrl& url) {
 
 void ApplicationCore::serverUpdate(const QString &s)
 {
-	QByteArray name = m_ts[m_currentTIdx]->name
-	QByteArray cmd(QString("password=%1&request=edit").arg(SHARED_PASSWORD).toLatin1());
-
+    //TODO: sort out tournamentTitle, name and path, which currently have a messed up relationship
+	QByteArray name = "testTournament";
+	QByteArray cmd(QString("password=%1&request=edit&tournamentTitle=%2&%3")
+        .arg(SHARED_PASSWORD).toLatin1()
+        .arg(name)
+        .arg(s));
+	m_editReply = m_manager->post(m_server, cmd);
 }
