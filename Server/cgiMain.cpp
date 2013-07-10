@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
         in.append(QChar(tmp));
     if(!in.contains(QByteArray("password=")+QByteArray(SHARED_PASSWORD))){//Invalid invocation
         printf("FAIL - Authentication Error\n");
-        printf("DEBUG -" + in + "\n");
-        printf("DEBUG -" + QByteArray("password=")+QByteArray(SHARED_PASSWORD) +"\n");
+        printf("DEBUG -%s\n", in.constData());
+        printf("DEBUG -%s\n", (QByteArray("password=")+QByteArray(SHARED_PASSWORD)).constData());
         return 0;
     }
 
