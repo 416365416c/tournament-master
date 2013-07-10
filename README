@@ -4,4 +4,5 @@ Server is c++/cgi and client is c++/qml.
 Shared code for dealing with data objects in the common directory.
 The new engin.io thing looks cool, but I already had a cgi app...
 
-Note that the XML format is not "cascades-compatible"
+Note that the XML format is not "cascades-compatible". It needs to be loaded and parsed by Qt first. This is largely due to the fact that the standard <xml /> element at the top makes cascades choke.
+Note that security is minimal, as the sensitivity of the information is minimal. Server access requires the same password compiled into the server and client.

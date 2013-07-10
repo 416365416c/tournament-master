@@ -8,8 +8,10 @@
 #include<QSettings>
 #include<QDebug>
 #include<cstdio>
-#include"../common/tournament.h"
-#include"../common/match.h"
+#include"../Common/tournament.h"
+#include"../Common/match.h"
+#include"../Common/player.h"
+#include"../Common/password.h"
 //cgi app to modify the XML files.
 
 int main(int argc, char *argv[])
@@ -20,13 +22,17 @@ int main(int argc, char *argv[])
     int tmp;
     while((tmp = getchar()) != EOF)
         in.append(QChar(tmp));
+    if(!in.contains(QByteArray("password=")+QByteArray(SHARED_PASSWORD))){//Invalid invocation
+        printf("FAIL - Authentication Error\n");
+        return 0;
+    }
 
     QMap<QString, QString> input;
     printf("Content-type: text/plain\r\n\r\n");
     QSettings settings("xmlPaths.ini", QSettings::IniFormat);
     if(!in.contains('&')){//Invalid invocation
         printf("FAIL - Error Invalid Input\n");
-        printf("HINT - %s", settings.allKeys().join(",").toAscii().constData());
+        printf("HINT - %s", settings.allKeys().join(",").toLatin1().constData());
         return 0;
     }
     foreach(const QString &str, QString::fromUtf8(in).split(QChar('&'))){
@@ -34,47 +40,77 @@ int main(int argc, char *argv[])
         input.insert(split[0], split[1].trimmed());
     }
     //DEBUGGING
-    //printf("%s\n", in.constData());
+    printf("%s\n", in.constData());
+    QString request = input.value("request", "list");
+    if (request == "list") {
+        settings.beginGroup("tournaments");
+        foreach (const QString &s, settings.allKeys())
+            printf("%s\n",settings.value(s).toString().toLatin1().constData());
+
+        printf("\n");
+        return 0;
+    }
 
     QString targetFile = settings.value("tournaments/"+input.value("tournamentTitle", "dummy"),
-                                     QVariant("/var/www/html/dummyTournament.xml")).toString();
+                                     QVariant("/var/www/xml/dummyTournament.xml")).toString();
     QString lockFilePath = QDir::tempPath() + "/" + targetFile.split('/').last() + ".lock";
-    Tournament *t = new Tournament;
     if(QFile::exists(lockFilePath)){
         printf("FAIL - Error Lock File");
-    }else{//Should we do decent error handling also?
+    } else if (request != "edit") {
+        printf("FAIL - Unknown request");
+    } else {//Should we do decent error handling also?
         bool goingOkay = true;
         QFile lockFile(lockFilePath);
         goingOkay = goingOkay && lockFile.open(QFile::WriteOnly);
         goingOkay = (0<lockFile.write("\n"));//Assumed to be the equivalent of 'touch'
         lockFile.close();
 
+        goingOkay = (1==input.remove("tournamentTitle"));
+
         QFile xml(targetFile);
         goingOkay = goingOkay && xml.open(QFile::ReadOnly | QIODevice::Text);
+        Tournament *t = new Tournament;
         t->loadFromXml(xml.readAll());
 
-        Match* m = t->matchAt(input.value("matchIndex").toInt());
-        goingOkay = goingOkay && m;
-        goingOkay = (1==input.remove("tournamentTitle"));
-        goingOkay = (1==input.remove("matchIndex"));
-        //Treat winner specially, this sets up the future matches
-        if(input.value("winner") != QString("")){
-            int winner = 0;
-            if(input.value("winner")==m->player1())
-                winner = 1;
-            else if(input.value("winner")==m->player2())
-                winner = 2;
-            if(winner>0)
-                t->matchFinished(m, winner==1);
-            else
-                printf("I did not know that %s was playing this match.\n", input.value("winner").toAscii().data());
+        QObject* o = 0;
+        if (input.contains("matchIndex")) {
+            Match* m = t->matchAt(input.value("matchIndex").toInt());
+            goingOkay = goingOkay && m;
+            goingOkay = (1==input.remove("matchIndex"));
+            //Treat winner specially, this sets up the future matches
+            if(input.value("winner") != QString("")){
+                int winner = 0;
+                if(input.value("winner")== m->player1()->getName())
+                    winner = 1;
+                else if(input.value("winner")==m->player2()->getName())
+                    winner = 2;
+                if(winner>0)
+                    t->matchFinished(m, winner==1);
+                else
+                    printf("I did not know that %s was playing this match.\n", input.value("winner").toLatin1().data());
+            }
+            input.remove("winner");
+            o = m;
+        } else if (input.contains("playerIndex")) {
+            int idx = input.value("playerIndex").toInt();
+            if (idx == -1) {
+                idx = t->playerCount();
+                t->addEmptyPlayer();
+            }
+            Player *p = t->playerAt(idx);
+            goingOkay = goingOkay && p;
+            goingOkay = (1==input.remove("playerIndex"));
+            o = p;
+        } else {
+            o = t;
         }
-        input.remove("winner");
+        goingOkay = goingOkay && o;
+
 
         //generic approach is forwards compatible
-        if(m){
+        if(o){
             foreach(const QString &key, input.keys()){
-                m->setProperty(key.toUtf8().constData(), QVariant(input.value(key)));
+                o->setProperty(key.toUtf8().constData(), QVariant(input.value(key)));
             }
         }
         if(goingOkay){//Should have at least some error checking before we delete a file

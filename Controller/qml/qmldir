@@ -1,0 +1,13 @@
+Main 2.0 Main.qml
+Button 2.0 Button.qml
+LineEdit 2.0 LineEdit.qml
+MyText 2.0 MyText.qml
+TourneyDisplay 2.0 TourneyDisplay.qml
+DisplayDelegate 2.0 DisplayDelegate.qml
+MatchEditor 2.0 MatchEditor.qml
+CheckBox 2.0 CheckBox.qml
+Line 2.0 Line.qml
+Main 1.0 old/Main.qml
+Button 1.0 old/Button.qml
+LineEdit 1.0 old/LineEdit.qml
+MyText 1.0 old/MyText.qml

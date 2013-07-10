@@ -3,12 +3,13 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = tournamentCgi
 DEPENDPATH += .
 INCLUDEPATH += .
 QT -= declarative gui
 DEFINES += NO_DECLARATIVE
 
 # Input
-HEADERS += ../common/tournament.h ../common/match.h
-SOURCES += cgiMain.cpp ../common/tournament.cpp ../common/match.cpp
+HEADERS += ../Common/tournament.h ../Common/match.h ../Common/player.h ../Common/password.h \
+    ../Common/password.h
+SOURCES += cgiMain.cpp ../Common/tournament.cpp ../Common/match.cpp ../Common/player.cpp
