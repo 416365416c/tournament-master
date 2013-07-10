@@ -309,7 +309,10 @@ void Tournament::loadFromXml(QByteArray xml)
             p->m_pId = reader.attributes().value("pId").toString().toInt();
             p->m_race = reader.attributes().value("race").toString();
             p->m_email = reader.attributes().value("email").toString();
-            _players << p;
+            if (p->getId() == 0) //special sentinel user
+                delete p;
+            else
+                _players << p;
         }else if(reader.name() == "Match"){
             Match* m = new Match(this);
             m->title = reader.attributes().value("title").toString();
@@ -368,6 +371,8 @@ QByteArray Tournament::writeToXml() const
     writer.writeAttribute("subT", m_subTitle);
     writer.writeAttribute("type", m_eventType);
     foreach(Player* p, _players){
+        if (p->getId() == 0)
+            continue;
         writer.writeStartElement("Player");
         writer.writeAttribute("pId", QString::number(p->getId()));
         writer.writeAttribute("name", p->getName());

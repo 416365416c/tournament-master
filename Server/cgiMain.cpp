@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
         in.append(QChar(tmp));
     if(!in.contains(QByteArray("password=")+QByteArray(SHARED_PASSWORD))){//Invalid invocation
         printf("FAIL - Authentication Error\n");
-        printf("DEBUG -%s\n", in.constData());
-        printf("DEBUG -%s\n", (QByteArray("password=")+QByteArray(SHARED_PASSWORD)).constData());
         return 0;
     }
 
@@ -34,7 +32,6 @@ int main(int argc, char *argv[])
     QSettings settings("xmlPaths.ini", QSettings::IniFormat);
     if(!in.contains('&')){//Invalid invocation
         printf("FAIL - Error Invalid Input\n");
-        printf("HINT - %s", settings.allKeys().join(",").toLatin1().constData());
         return 0;
     }
     foreach(const QString &str, QString::fromUtf8(in).split(QChar('&'))){
@@ -43,7 +40,7 @@ int main(int argc, char *argv[])
     }
     //DEBUGGING
     printf("%s\n", in.constData());
-    QString request = input.value("request", "list");
+    QString request = input.value("request", "debug");
     if (request == "list") {
         settings.beginGroup("tournaments");
         foreach (const QString &s, settings.allKeys())
@@ -51,6 +48,10 @@ int main(int argc, char *argv[])
 
         printf("\n");
         return 0;
+    } else if (request == "debug") {
+        printf("Unknown request\n");
+        printf("HINT - %s\n", settings.allKeys().join(",").toLatin1().constData());
+        printf("Input - %s\n", in.constData());
     }
 
     QString targetFile = settings.value("tournaments/"+input.value("tournamentTitle", "dummy"),
