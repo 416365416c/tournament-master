@@ -34,7 +34,7 @@ NavigationPane {
                         type: "tournament"
                         StandardListItem {
                             id: slic
-                            title: ListItemData.name
+                            title: ListItemData.name == "" ? "Unnamed" : ListItemData.name
                             description: ListItemData.subTitle
                             status: ListItemData.time
                             imageSource: "images/" + ListItemData.eventType + ".png"
@@ -89,7 +89,7 @@ NavigationPane {
         },
         ComponentDefinition {
             id: settingsPageDefinition
-            source: "settingsPage.qml"
+            source: "SettingsPage.qml"
         }
     ]
 

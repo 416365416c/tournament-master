@@ -1,7 +1,8 @@
 #include "tournament.h"
 #include "match.h"
 #include "player.h"
-#include <cmath>
+#include <math.h>
+#include <stdlib.h>
 #include <QTime>
 #include <QDebug>
 #include <QXmlStreamReader>
@@ -10,7 +11,7 @@
 Tournament::Tournament(QObject *parent) :
     QObject(parent)
 {
-    m_type = QLatin1String("hidden");//hidden,sc2,ahgl,lol,arcade
+    m_eventType = QLatin1String("hidden");//hidden,sc2,ahgl,lol,arcade
     m_status = QLatin1String("signup");//signup,active,done
     addEmptyPlayer();
     _players[0]->setEmail("none@none.none");

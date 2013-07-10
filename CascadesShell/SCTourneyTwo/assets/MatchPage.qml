@@ -67,7 +67,7 @@ Page {
             }
             Button {
                 text: "Submit"
-                onClicked: { mobj.schedule = dtp.value; scheduleDialog.close(); appData.setSchedule(mobj.schedule); }
+                onClicked: { mobj.schedule = dtp.value; scheduleDialog.close(); appData.setSchedule(mobj.mId, mobj.schedule); }
             }
         },
         QuotSystemQuotDialog {

@@ -9,8 +9,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../assets/main.qml" line="54"/>
+        <location filename="../assets/main.qml" line="59"/>
         <source>Info Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../assets/main.qml" line="68"/>
+        <source>Settings Page</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

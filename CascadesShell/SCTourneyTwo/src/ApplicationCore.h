@@ -35,7 +35,7 @@ public Q_SLOTS:
 	void loadEvent(const QString &name); //triggers generating of model #2
 	void confirmSchedule(int mId, bool doit = true);
 	void setWinner(int mId, int which);
-	void setSchedule(QDateTime t);
+	void setSchedule(int mId, QDateTime t);
 	void registerPlayer(QString title, QString name, QString email, QString race);
 	void changeServer(const QUrl &url);
 private Q_SLOTS:
