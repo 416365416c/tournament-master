@@ -38,6 +38,7 @@ public Q_SLOTS:
 	void setSchedule(int mId, QDateTime t);
 	void registerPlayer(QString title, QString name, QString email, QString race);
 	void changeServer(const QUrl &url);
+	bool matchActive(int mId);//dead code
 private Q_SLOTS:
 	void handleNetworkReply(QNetworkReply*);
 	void generateModelOne();
@@ -54,6 +55,7 @@ private:
 	bool m_l1;
 	bool m_l2;
 	QList<Tournament *> m_ts;
+	QList<QByteArray> m_titles;
 	bb::cascades::GroupDataModel* m_m1;
 	bb::cascades::GroupDataModel* m_m2;
 	QNetworkReply *m_listReply;

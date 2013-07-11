@@ -6,8 +6,8 @@ Page {
         "player1" : "Monkey",
         "player2" : "Orange",
         "title" : "Dummy Data",
-        "p1race" : "Z",
-        "p2race" : "Z",
+        "p1race" : "R",
+        "p2race" : "R",
         "schedule" : "",
         "winner" : "",
         "active" : true
@@ -33,7 +33,7 @@ Page {
             text: "Schedule: " + (mobj.schedule = "" ? "Unscheduled" : mobj.schedule)
         }
         Label {
-            text: "Result: " + (mobj.winner == "" ? "No result" : mobj.winner + "won!")
+            text: "Result: " + (mobj.winner == "" ? "No result" : mobj.winner + " won!")
         }
         Button {
             enabled: mobj.active
@@ -50,7 +50,7 @@ Page {
             }
         }
         Button {
-            enabled: mobj.active
+            enabled: mobj.active 
             text: "Record Result"
             onClicked: {
                 resultDialog.open();
@@ -63,11 +63,12 @@ Page {
             DateTimePicker {
                 id: dtp
                 title: "Suggest Schedule:"
+                mode: DateTimePickerMode.DateTime
                 value: mobj.schedule == "" ? "2013-07-07T10:00:00" : mobj.schedule
             }
             Button {
                 text: "Submit"
-                onClicked: { mobj.schedule = dtp.value; scheduleDialog.close(); appData.setSchedule(mobj.mId, mobj.schedule); }
+                onClicked: { mobj.schedule = dtp.value.toString(); scheduleDialog.close(); appData.setSchedule(mobj.mId, dtp.value); }
             }
         },
         QuotSystemQuotDialog {
@@ -89,6 +90,7 @@ Page {
             PlayerLabel {
                 name: mobj.player1
                 race: mobj.p1race
+
                 gestureHandlers: TapHandler {
                     onTapped: {
                         appData.setWinner(mobj.mId, 1)
@@ -99,6 +101,7 @@ Page {
             PlayerLabel {
                 name: mobj.player2
                 race: mobj.p2race
+
                 gestureHandlers: TapHandler {
                     onTapped: {
                         appData.setWinner(mobj.mId, 2)
@@ -109,6 +112,7 @@ Page {
             Button {
                 text: "Cancel"
                 onClicked: {
+                    navigationPane.pop()
                     resultDialog.close()
                 }
             }

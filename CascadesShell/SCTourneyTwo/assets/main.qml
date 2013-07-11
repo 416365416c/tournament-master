@@ -24,14 +24,14 @@ NavigationPane {
                     source: "dummydata/dummyTournamentList.xml"
                 }
                 */
-                dataModel: appData.tournamentsModel;
+                dataModel: appData.tournamentsModel
                 listItemComponents: [
+                    /*ListItemComponent {
+                        type: "header"
+                        Header { title: ListItemData.name}
+                    },*/
                     ListItemComponent {
-                        type: "eventGroup"
-                        Header { title: ListItemData.title }
-                    },
-                    ListItemComponent {
-                        type: "tournament"
+                        type: "item"
                         StandardListItem {
                             id: slic
                             title: ListItemData.name == "" ? "Unnamed" : ListItemData.name
@@ -46,10 +46,11 @@ NavigationPane {
                     appData.loadEvent(itemData.name);
                     var pg2 = secondPageDefinition.createObject();
                     //pg2.xmlSrc = itemData.source;
-                    pg2.imgSrc = itemData.imgSrc;
+                    pg2.imgSrc =  "images/" + itemData.eventType + ".png";
                     pg2.title = itemData.name;
+                    pg2.status = itemData.status;
                     pg2.time = itemData.time;
-                    pg2.description = itemData.desc;
+                    pg2.description = itemData.description;
                     navigationPane.push(pg2);
                 }
             }

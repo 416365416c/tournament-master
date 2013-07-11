@@ -31,6 +31,9 @@ ApplicationCore::~ApplicationCore() {
 }
 
 void ApplicationCore::fetchData() {
+	qDeleteAll(m_ts);//Does this crash active models?
+	m_ts.clear();
+	m_titles.clear();
 	QByteArray cmd(QString("password=%1&request=list").arg(SHARED_PASSWORD).toLatin1());
 	m_listReply = m_manager->post(QNetworkRequest(m_server), cmd);
 }
@@ -58,12 +61,13 @@ void ApplicationCore::handleNetworkReply(QNetworkReply* reply)
 		qDebug() << "Network Beta" << reply->errorString() << reply->readAll();
 		//TODO: Error handling
 	} else {
-		qDebug() << "Network Gamma" << reply->errorString();
 		QByteArray xml = reply->readAll();
 		Tournament* t = new Tournament(this);
 		t->loadFromXml(xml);
 		m_ts << t;
-		if(--m_xmlCount)
+		m_titles << reply->url().toString().split('/').last().split('.').first().toLatin1();//This relationship needs to be set in stone
+		qDebug() << "Network Gamma" << reply->errorString() << t->name() << m_titles[m_titles.count() - 1];
+		if(!(--m_xmlCount))
 			generateModelOne();
 	}
 }
@@ -82,13 +86,7 @@ void ApplicationCore::generateModelOne()
 	m_l1=true;
 	emit loadedOneChanged();
 
-    //Note that I don't think refs will work, so we're converting to variant map here
-	QStringList mps;
-	//mps << "index" << "p1race" << "p2race" << "title" << "player1" << "player2" << "winner" << "schedule" << "active";
-	mps << "index";
-	m_m2 = new GroupDataModel(mps);
-    m_m2->setGrouping(ItemGrouping::None);
-	loadEvent(m_ts[0]->name());
+   loadEvent(m_ts[0]->name());
 	m_l2 = true;
 	emit loadedTwoChanged();
 }
@@ -101,7 +99,14 @@ void ApplicationCore::loadEvent(const QString &name) {
 
 	m_currentTIdx = i;
 	j=0;
-	m_m2->clear();
+	GroupDataModel* m3 = m_m2;
+	//Note that I don't think refs will work, so we're converting to variant map here
+	QStringList mps;
+	//mps << "index" << "p1race" << "p2race" << "title" << "player1" << "player2" << "winner" << "schedule" << "active";
+	mps << "mId";
+	m_m2 = new GroupDataModel(mps);
+	m_m2->setGrouping(ItemGrouping::None);
+
 	while(j<m_ts[i]->matchCount()) {
         QVariantMap map;
 		Match* m = m_ts[i]->matchAt(j++);
@@ -109,21 +114,37 @@ void ApplicationCore::loadEvent(const QString &name) {
         map["title"] = m->getTitle();
         map["winner"] = m->winner() ? m->winner()->getName() : QString();
         map["schedule"] = m->getSched();
+        map["schConf"] = m->getSchConf();
 
         map["player1"] = m->player1() ? m->player1()->getName() : QLatin1String("???");
         map["player2"] = m->player2() ? m->player2()->getName() : QLatin1String("???");
         map["p1race"] = m->player1() ? m->player1()->getRace() : QLatin1String("R");
         map["p2race"] = m->player2() ? m->player2()->getRace() : QLatin1String("R");
 
-        map["active"] = m_ts[i]->status() == QString("active");
-
+        map["active"] = (m_ts[i]->status() == QString("active")
+        		&& (!m->winner())
+        		&& (m->player1() && m->player2()));
         m_m2->insert(map);
     }
 	emit modelTwoChanged();
+	bool bugFixed = false;
+	if(m3 && bugFixed) {
+		m3->clear(); //This crashes right now... guess they didn't implement it yet?
+		delete m3;
+	}
+}
+
+bool ApplicationCore::matchActive(int mId) {
+	Match *m  = m_ts[m_currentTIdx]->matchAt(mId);
+    if (!m) return false;
+    return (m_ts[m_currentTIdx]->status() == QString("active")
+        		&& (!m->winner())
+        		&& (m->player1() && m->player2()));
 }
 
 void ApplicationCore::confirmSchedule(int mId, bool doit) {
 	serverUpdate(QString("matchIndex=%1&schConf=%2").arg(mId).arg(doit));
+	loadEvent(m_ts[m_currentTIdx]->name());
 }
 
 void ApplicationCore::setWinner(int mId, int which) {
@@ -134,6 +155,8 @@ void ApplicationCore::setWinner(int mId, int which) {
     else
         winnerName = m->player2()->getName();
 	serverUpdate(QString("matchIndex=%1&winner=%2").arg(mId).arg(winnerName));
+	m_ts[m_currentTIdx]->matchFinished(m, (which==1));
+	loadEvent(m_ts[m_currentTIdx]->name());
 }
 
 void ApplicationCore::setSchedule(int mId, QDateTime t) {
@@ -154,8 +177,7 @@ void ApplicationCore::changeServer(const QUrl& url) {
 
 void ApplicationCore::serverUpdate(const QString &s)
 {
-    //TODO: sort out tournamentTitle, name and path, which currently have a messed up relationship
-	QByteArray name = "testTournament";
+    QByteArray name = m_titles[m_currentTIdx];
 	QByteArray cmd(QString("password=%1&request=edit&tournamentTitle=%2&%3")
         .arg(SHARED_PASSWORD)
         .arg(QString::fromLatin1(name))

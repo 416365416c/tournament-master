@@ -7,6 +7,7 @@ Page {
     property string description: "Non-descript event"
     property string time: "Somewhen"
     property alias title: titleBar.title
+    property string status: "done"
     titleBar: TitleBar { 
         id: titleBar
         // Localized text with the dynamic translation and locale updates support is unused
@@ -43,19 +44,19 @@ Page {
             dataModel: appData.matchesModel
             listItemComponents: [
                 ListItemComponent {
-                    type: "Match"
+                    type: "item"
                     StandardListItem {
                         description: ListItemData.player1 + " vs " + (ListItemData.player2 == "" ? "bye" : ListItemData.player2)
                         title: ListItemData.title
-                        status: ListItemData.winner == "" ? "Unplayed" : "Played"
+                        status: ListItemData.winner == "" ? (ListItemData.schConf ? "Scheduled" : "Unplayed") : "Played"
                     }
-                },
+                }/*,
                 ListItemComponent {
-                    type: "MatchGroup"
+                    type: "header"
                     Header {
                         title: ListItemData.title
                     }
-                }
+                }*/
             ]
             onTriggered: {
                 var itemData = dataModel.data(indexPath);
@@ -82,28 +83,32 @@ Page {
             }
             TextField {
                 id: email
-                hintText: "Blackberry Email"
+                hintText: "Friend code OR real id email"
                 inputMode: TextFieldInputMode.EmailAddress
             }
             SegmentedControl {
                 id: raceSelect
                 preferredHeight: 800
                 Option {
-                    imageSource: "asset:///images/terran.png"
+                    imageSource: "asset:///images/terranSml.png"
                     value: "T"
+                    text: "T"
                     selected: true
                 }
                 Option {
                     value: "Z"
-                    imageSource: "asset:///images/zerg.png"
+                    text: "Z"
+                    imageSource: "asset:///images/zergSml.png"
                 }
                 Option {
                     value: "P"
-                    imageSource: "asset:///images/toss.png"
+                    text: "P"
+                    imageSource: "asset:///images/tossSml.png"
                 }
                 Option {
                     value: "R"
-                    imageSource: "asset:///images/random.png"
+                    text: "R"
+                    imageSource: "asset:///images/randomSml.png"
                 }
             } 
             Button {
