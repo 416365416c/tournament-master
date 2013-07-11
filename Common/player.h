@@ -8,6 +8,7 @@
 class Player : public QObject
 {
     Q_OBJECT
+    //Don't actually know how much we need on the players?
     Q_PROPERTY(int pId READ getId WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString name READ getName WRITE setName NOTIFY nameChanged)
     Q_PROPERTY(QString race READ getRace WRITE setRace NOTIFY raceChanged)

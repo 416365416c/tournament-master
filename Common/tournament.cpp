@@ -309,10 +309,13 @@ void Tournament::loadFromXml(QByteArray xml)
             p->m_pId = reader.attributes().value("pId").toString().toInt();
             p->m_race = reader.attributes().value("race").toString();
             p->m_email = reader.attributes().value("email").toString();
-            if (p->getId() == 0) //special sentinel user
+            if (p->getId() == 0) //special sentinel user can't be written
                 delete p;
-            else
+            else {
+                if (p->m_pId != _players.count())
+                    qCritical() << "Error: Player index mismatch at" << p->m_pId;
                 _players << p;
+            }
         }else if(reader.name() == "Match"){
             Match* m = new Match(this);
             m->title = reader.attributes().value("title").toString();
@@ -327,6 +330,9 @@ void Tournament::loadFromXml(QByteArray xml)
             m->p2approves = (reader.attributes().value("p2approves").toString() == QLatin1String("true"));
             m->schConf = (reader.attributes().value("confirmed").toString() == QLatin1String("true"));
             m->schedule = reader.attributes().value("schedule").toString();
+            m->index = reader.attributes().value("index").toString().toInt();
+            if (m->index != _matches.count())
+                qCritical() << "Error: Match index mismatch at" << m->index;
             _matches << m;
         }
     }
