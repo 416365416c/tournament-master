@@ -8,7 +8,7 @@ Page {
             attachedObjects: [
                 ContentSecurity  {
                     id: contentsecurity
-                    defaultPerimeter: TextAreaScrollMode.Elastic //SecurityPerimeter.Enterprise //try to open in work browser
+                    defaultPerimeter: TextAreaScrollMode.Elastic + 0 //SecurityPerimeter.Enterprise //try to open in work browser
                 }
             ]
         }
