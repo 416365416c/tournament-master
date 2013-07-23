@@ -1,5 +1,5 @@
 1
-28
+29
 dummydata/dummyTournament.xml
 dummydata/dummyTournamentList.xml
 images/ahgl.jpg
@@ -24,6 +24,7 @@ InfoPage.qml
 main.qml
 MatchPage.qml
 PlayerLabel.qml
+QuotLabelQuot.qml
 QuotSystemQuotDialog.qml
 RacialImage.qml
 SettingsPage.qml

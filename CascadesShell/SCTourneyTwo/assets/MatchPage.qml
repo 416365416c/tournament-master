@@ -20,15 +20,21 @@ Page {
         // Localized text with the dynamic translation and locale updates support is unused
     }
     Container {
-        PlayerLabel {
-            name: mobj.player1
-            race: mobj.p1race
+        Container {
+            layout: StackLayout {
+            	orientation: LayoutOrientation.LeftToRight
+            }
+            PlayerLabel {
+                name: mobj.player1
+                race: mobj.p1race
+            }
+            Label { text: "VS" }
+            PlayerLabel {
+                name: mobj.player2
+                race: mobj.p2race
+            }    
         }
-        Label { text: "VERSUS" }
-        PlayerLabel {
-            name: mobj.player2
-            race: mobj.p2race
-        }
+        
         Label {
             text: "Schedule: " + (mobj.schedule = "" ? "Unscheduled" : mobj.schedule)
         }
@@ -84,7 +90,7 @@ Page {
         },
         QuotSystemQuotDialog {
             id: resultDialog
-            Label {
+            QuotLabelQuot {
                 text: "The Winner was..."
             }
             PlayerLabel {

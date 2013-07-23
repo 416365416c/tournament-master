@@ -1,5 +1,9 @@
 import bb.cascades 1.2
-
+import bb.system 1.2
+/* While it exists, it does not provide the versatility I need
+SystemDialog { //Huh...  I guess it does exist.
+    
+}*/
 Dialog {
     id: scheduleDialog//NOTE: System dialogs apparently have no QML API? Lame...
     default property alias contentzor: mainContainer.controls
@@ -12,7 +16,7 @@ Dialog {
             //???
         }
         ImageView {
-            //apparently no way to create custom colors in QML?
+            //apparently no way to create custom colors in QML? There is, I just didn't see it
             imageSource: "asset:///images/slightlytransparentwhite...youheardme,thisneedsanimage.png"
             scalingMethod: ScalingMethod.Fill
             horizontalAlignment: HorizontalAlignment.Fill

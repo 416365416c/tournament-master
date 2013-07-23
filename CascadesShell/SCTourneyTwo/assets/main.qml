@@ -1,4 +1,5 @@
 import bb.cascades 1.2
+import bb.system 1.2 //has SecurityPerimeter?
 
 NavigationPane {
     id: navigationPane
@@ -12,10 +13,37 @@ NavigationPane {
         Container {
             ActivityIndicator {
                 id: ai
+                preferredWidth: 720 //virtually full screen? Or try to center?
                 onCreationCompleted: {
                     ai.start();
                     appData.loadedOneChanged.connect(ai.stop());
                 }
+            }
+            Label {
+                content.flags: TextContentFlag.ActiveText
+                text: "More at http://go/ahgl"
+                /*attachedObjects: [ //Can't get it to open it in work browser?
+                    ContentSecurity  {
+                        id: contentsecurity
+                        defaultPerimeter: SecurityPerimeter.Enterprise //try to open in work browser
+                    }
+                ]*/
+               /*activeTextHandler: ActiveTextHandler {
+                   onTriggered: {
+                       invoke.trigger("bb.action.open");
+                       event.abort(); //managed myself
+                   }
+               }
+                attachedObjects: [
+                                   Invocation {
+                                       id: invoke
+                                       query {
+                                           //invokeTargetId: "sys.browser"
+                                           uri: "http://go/ahgl"
+                                           perimeter: SecurityPerimeter.Enterprise 
+                                       }
+                                   }
+                               ]*/
             }
             ListView {
                 /*
@@ -56,16 +84,8 @@ NavigationPane {
             }
         }
 
-        actions:[ ActionItem {
-            title: qsTr("Info Page") + Retranslate.onLocaleOrLanguageChanged
-            ActionBar.placement: ActionBarPlacement.OnBar
-
-            onTriggered: {
-                // A second Page is created and pushed when this action is triggered.
-                navigationPane.push(infoPageDefinition.createObject());
-            }
-        }
-        , ActionItem {
+        actions:[ 
+        ActionItem {
             title: qsTr("Settings Page") + Retranslate.onLocaleOrLanguageChanged
             ActionBar.placement: ActionBarPlacement.OnBar
             

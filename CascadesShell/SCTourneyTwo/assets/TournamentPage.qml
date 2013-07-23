@@ -74,7 +74,7 @@ Page {
         },
         QuotSystemQuotDialog {
             id: signupDialog
-            Label {
+            QuotLabelQuot {
                 text: "Sign up now!"
             }
             TextField {
