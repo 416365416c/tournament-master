@@ -1,3 +1,5 @@
 This is a utility for graphically modifying the data, but from a local perspective.
 
 Use this to setup data files for transfer to the server, as the cgiServer has deliberately limited capabilities
+
+Requires: Qt 5.1+, including QtQuick.Controls.

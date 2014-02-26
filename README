@@ -8,3 +8,11 @@ server and client are Qt4, controller is Qt5. Everything in common needs to comp
 
 Note that the XML format is not "cascades-compatible". It needs to be loaded and parsed by Qt first. This is largely due to the fact that the standard <xml /> element at the top makes cascades choke.
 Note that security is minimal, as the sensitivity of the information is minimal. Server access requires the same password compiled into the server and client.
+
+For web application development practice, this is being ported to a JS app.
+
+Client side - brick + backbone.
+Server side - node.js + JSON.
+
+Porting will be piecemeal: First client with old PHP/XML server, then migrate backend to node.js server, then do something with controller.
+Cascades client should continue to work with node.js server, controller might not be interoperable (investigation pending and low priority).
