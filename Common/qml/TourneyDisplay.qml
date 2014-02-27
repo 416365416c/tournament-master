@@ -1,18 +1,24 @@
 import QtQuick 2.1
 import QtQuick.Window 2.1
 import QtQuick.Controls 1.0
-Window{
+import "xmlload.js" as LoadLogic
+
+Item {
     id: container
     visible: true
     width: 640
     height: 480
     property MatchEditor me: me
     property bool figuredItOut: false//True once one opens. Might be useful to pulse help or something?
+    property bool isClient: false //Set true on client shell. Not actually secure
+    property url source: ""
+    property string tt: tournamentTitle
+    onSourceChanged: LoadLogic.loadFromUrl(source, tournament);
     signal goBack
     MatchEditor{id:me; z:100}
     Connections{
         target: me
-        onSentUpdate: matches.reload();
+        onSentUpdate: matches.reload();//Can't remember what this does?
     }
     MyText {
         text: "Hover over a match to see more.<br />Click on a match to edit details or record outcomes."
@@ -64,7 +70,7 @@ Window{
             }
         }
     }
-    Item{
+    Flickable {
         id: flicker
         z:1
         width: parent.width
@@ -72,7 +78,7 @@ Window{
         //contentHeight: 768 //TODO: Actually calculate something
         //contentWidth: 1024
         anchors.centerIn:parent
-        property string tournamentTitle
+        property string tournamentTitle: container.tt
         Item {
             id: main
             anchors.horizontalCenter: parent.horizontalCenter;

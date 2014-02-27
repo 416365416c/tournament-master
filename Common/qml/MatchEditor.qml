@@ -1,5 +1,6 @@
 import QtQuick 2.1
 import QtQuick.Controls 1.0
+import "xmlload.js" as LoadLogic
 
 Rectangle {
     id: container
@@ -40,6 +41,8 @@ Rectangle {
             tournament.matchFinished(match, true);
         else if(sendWon == match.player2.name)
             tournament.matchFinished(match, false);
+        if(parent.isClient)//directly under TourneyDisplay
+            LoadLogic.sendChanges(match, parent.source);
     }
 
     NumberAnimation { id: fadeIn; target: container; property: "opacity"; to: 1; duration: 400 }
