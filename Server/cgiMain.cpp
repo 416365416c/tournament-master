@@ -17,6 +17,8 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
+    //Needed to allow web clients access to XML resources
+    printf("Access-Control-Allow-Origin: *\r\n");
     printf("Content-type: text/plain\r\n\r\n");
 
     QByteArray in;
