@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>Tournament Master Tracker</title>
+<script data-main="js/main" src="js/libs/require/require.js"></script>
+<link rel="stylesheet" type="text/css" href="js/libs/brick/brick-1.0.0rc1.css"/>
+<link rel="stylesheet" type="text/css" href="js/libs/brick/x-tag-components.css"/>
+<!-- Needs to use require if require is involved?
+<script type="text/javascript" src="brick/brick-1.0.0rc1.min.js"></script>
+<script type="text/javascript" src="brick/x-tag-components.js"></script>
+-->
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+</head>
+<body>
+<x-appbar>
+    <h1 id="titlebar">Tournament List</h1>
+    <button id="backbutton" disabled="true"> &lt;</button>
+</x-appbar>
+<x-deck>
+    <x-card id="initialList"> <!--populated from script--> </x-card>
+    <x-card id="contentPane"> <!--populated from script--> </x-card>
+</x-deck>
+<template id="tournamentCard">
+<p id="descHere"> </p>
+</template>
+<template id="tournamentCardRow">
+</template>
+<template id="tournamentSignup">
+<button onclick=>Sign me up!</button>
+</template>
+<template id="tournamentListCardRow">
+</template>
+</body>
+</html>
