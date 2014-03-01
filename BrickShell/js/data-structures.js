@@ -1,4 +1,4 @@
-// Use this as a quick template for future modules 
+// Abstracts all client-server communications
 define([ 
   'jquery', 
   'underscore', 
@@ -6,13 +6,12 @@ define([
 ], function($, _, Backbone){ 
     //Server Communication functions
     var baseUrl = "http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com";
-    function loadFromUrl(url, tournament, tournamentTitle) {
+    function loadTFromUrl(url, tournamentCollection) {
         var postman = new XMLHttpRequest()
         postman.open("GET", url, true);
         postman.onreadystatechange = function() {
             if (postman.readyState == postman.DONE) {
-                console.log("Sent data to $"+url+"$. Got this:\n" + postman.responseText);
-                var xmldata = postman.responseText;
+                var xmldata = $.parseXML(postman.responseText);
                 $(xmldata).find("Tournament").each(function() {
                     var t = {
                         name: $(this).attr("name"),
@@ -49,39 +48,14 @@ define([
                             schedule: $(this).attr("schedule")
                         });
                     });
-                    tournament = t;
+                    tournamentCollection.add(t);
                 });
-                console.log("I love my t:" + tournament);
             }
         }
         postman.send();
     }
 
-    function getTournaments() {
-         var url = baseUrl + "/cgi-bin/tournamentCgi";
-         var postman = new XMLHttpRequest()
-         var postData = "request="+ "list" +"&"
-                + "password="+"AdunToridas";
-        //url = url + postData;
-            postman.open("POST", url, true);
-            //postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            postman.onreadystatechange = function() {
-                if (postman.readyState == postman.DONE) {
-                    var lines = postman.responseText.split('\n');
-                    var ta, tt;
-                    console.log("Sent data. Got this:\n" + postman.responseText);
-                    for(var l in lines) {
-		    	if (lines[l].indexOf('/var/www') == 0) {
-			    var urlfragment = lines[l].slice(8);
-			    loadFromUrl(baseUrl + urlfragment, ta, tt);
-			}
-                    }
-                }
-            }
-            postman.send(postData);
-    }
-
-    function sendChanges(match, tournament) {
+    function sendChanges(match, tournament) {//TODO: ME!
          var postman = new XMLHttpRequest()
             var postData = "tournamentTitle="+ tournament.title +"&"
                 + "matchIndex="+match.index+"&"
@@ -110,15 +84,17 @@ define([
             pId : -1,
             name : "anonymous",
             email : "noreply@pppdnbrd.nope",
-            race : "R" // one of RZTP - not enum as it is also used direct user-visible (well defined meanings)
+            race : "R" // one of RZTP - not enum as it is also used direct user-visible (well defined domain meanings)
         },
         initialize: function(){
         },
+	sync: function() { alert("Player model sync not supported."); },
     });
     var pCollection = Backbone.Collection.extend({
         model: pModel,
         initialize: function(){
-        }
+        },
+	sync: function() { alert("Player collection sync not supported."); },
     });
     var mModel = Backbone.Model.extend({
         defaults: {
@@ -138,11 +114,13 @@ define([
         },
         initialize: function(){
         },
+	sync: function() { alert("Match model sync not supported, yet!"); },
     });
     var mCollection = Backbone.Collection.extend({
         model: mModel,
         initialize: function(){
-        }
+        },
+	sync: function() { alert("Match collection sync not supported."); },
     });
     var tModel = Backbone.Model.extend({
         defaults: {
@@ -152,19 +130,47 @@ define([
             subTitle : "Really, nothing here but fun", 
             type : "hidden", //ui should currently support values of "hidden", "sc2", "lol", "arcade"
             state : "current", //states are "signup", "current"(default), "done" - should this be enum?
-            players : new Array,
-            matches : new Array,
+            players : new pCollection,
+            matches : new mCollection,
         },
         initialize: function(){
         },
     });
     var tCollection = Backbone.Collection.extend({
         model: tModel,
+	sync: function(method, collection, options) {
+	    options || (options = {})
+	    if (method != "read") {
+		    alert("Touranaments list doesn't fully sync yet!");
+		    return;
+	    }
+            var url = baseUrl + "/cgi-bin/tournamentCgi";
+            var postman = new XMLHttpRequest()
+            var postData = "request="+ "list" +"&"
+                + "password="+"AdunToridas";//So much for the shared "secret"!
+            postman.open("POST", url, true);
+            postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            postman.onreadystatechange = function() {
+                if (postman.readyState == postman.DONE) {
+                    var lines = postman.responseText.split('\n');
+                    var ta, tt;
+                    for(var l in lines) {
+		    	if (lines[l].indexOf('/var/www') == 0) {
+			    var urlfragment = lines[l].slice(8);
+			    loadTFromUrl(baseUrl + urlfragment, collection);
+			}
+                    }
+                }
+            }
+            postman.send(postData);
+	},
         initialize: function(){
+		this.sync("read",this);
         }
     });
 
-    getTournaments(); //DEBUG
+    var tcAlpha = new tCollection;
+    //tcAlpha.on("add", function() { console.log(JSON.stringify(this.toJSON())); }, tcAlpha);
     return {
         playerModel: pModel,
         playerCollection: pCollection,
