@@ -15,8 +15,9 @@
     <h1 id="titlebar">Tournament List</h1>
     <button id="backbutton" disabled="true"> &lt;</button>
 </x-appbar>
+<x-layout><section id="initialList"></section> </x-layout>
 <x-deck>
-    <x-card id="initialList"> <!--populated from script--> </x-card>
+    <x-card id="initialListZ"> <!--populated from script--> </x-card>
     <x-card id="contentPane"> <!--populated from script--> </x-card>
 </x-deck>
 <template id="tournamentCard">
@@ -28,6 +29,7 @@
 <button onclick=>Sign me up!</button>
 </template>
 <template id="tournamentListCardRow">
+<p> Modern Major General! </p>
 </template>
 </body>
 </html>

@@ -178,6 +178,7 @@ define([
         matchCollection: mCollection,
         tournamentModel: tModel,
         tournamentCollection: tCollection,
+        allTournaments: tcAlpha,
         invalidDate: badDate
     };
 });
