@@ -11,7 +11,7 @@ define([
         postman.open("GET", url, true);
         postman.onreadystatechange = function() {
             if (postman.readyState == postman.DONE) {
-                console.log("Sent data. Got this:\n" + postman.responseText);
+                console.log("Sent data to $"+url+"$. Got this:\n" + postman.responseText);
                 var xmldata = postman.responseText;
                 $(xmldata).find("Tournament").each(function() {
                     var t = {
@@ -70,8 +70,12 @@ define([
                     var lines = postman.responseText.split('\n');
                     var ta, tt;
                     console.log("Sent data. Got this:\n" + postman.responseText);
-                    for(var l in lines)
-                        loadFromUrl(baseUrl + l, ta, tt);
+                    for(var l in lines) {
+		    	if (lines[l].indexOf('/var/www') == 0) {
+			    var urlfragment = lines[l].slice(8);
+			    loadFromUrl(baseUrl + urlfragment, ta, tt);
+			}
+                    }
                 }
             }
             postman.send(postData);
