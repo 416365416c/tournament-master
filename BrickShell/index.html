@@ -6,30 +6,31 @@
 <link rel="stylesheet" type="text/css" href="js/libs/brick/x-tag-components.css"/>
 <!-- Needs to use require if require is involved?
 <script type="text/javascript" src="brick/brick-1.0.0rc1.min.js"></script>
-<script type="text/javascript" src="brick/x-tag-components.js"></script>
+<script type="text/javascript" src="js/libs/brick/x-tag-components.js"></script>
 -->
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 </head>
 <body>
+<div id="fullBody"></div>
+<!--
 <x-appbar>
-    <h1 id="titlebar">Tournament List</h1>
-    <button id="backbutton" disabled="true"> &lt;</button>
+    <h1 id="titleBar">Tournament List</h1>
+    <button id="backButton" disabled="true"> &lt;</button>
 </x-appbar>
-<x-layout><section id="initialList"></section> </x-layout>
-<x-deck>
-    <x-card id="initialListZ"> <!--populated from script--> </x-card>
-    <x-card id="contentPane"> <!--populated from script--> </x-card>
+<x-deck id="mainDeck" transition-type="slide-left">
+    <x-card id="initialList"> </x-card>
+    <x-card id="contentPane"> </x-card>
 </x-deck>
-<template id="tournamentCard">
-<p id="descHere"> </p>
-</template>
-<template id="tournamentCardRow">
+-->
+<template id="pageTemplate">
+<img id="pageImg" />
+<p id="pageDesc"></p><br />
+<x-layout id="pageListPane"></x-layout>
 </template>
 <template id="tournamentSignup">
-<button onclick=>Sign me up!</button>
+<button onclick="alert('Not yet implemented')">Sign me up!</button>
 </template>
-<template id="tournamentListCardRow">
-<p> Modern Major General! </p>
+<template id="modalTemplate">
 </template>
 </body>
 </html>

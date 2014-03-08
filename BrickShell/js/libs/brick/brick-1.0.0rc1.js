@@ -1732,6 +1732,7 @@ if (typeof WeakMap === "undefined") {
     });
 })();
 
+/*
 (function() {
     xtag.register("x-appbar", {
         lifecycle: {
@@ -1767,6 +1768,7 @@ if (typeof WeakMap === "undefined") {
         }
     });
 })();
+*/
 
 (function() {
     var LEFT_MOUSE_BTN = 0;
@@ -2908,6 +2910,7 @@ if (typeof WeakMap === "undefined") {
         var getters = sides[side], selected = deck.xtag.selected && deck.xtag.selected[getters[0]];
         if (selected) deck.showCard(selected, direction); else if (deck.loop || deck.selectedIndex == -1) deck.showCard(deck[getters[1]], direction);
     }
+    alert("Yes the damn thing registered!");
     xtag.register("x-deck", {
         events: {
             "reveal:delegate(x-card)": function(e) {
@@ -3051,6 +3054,7 @@ if (typeof WeakMap === "undefined") {
     });
 })();
 
+/*
 (function() {
     function reveal(e) {
         var flipBox = e.currentTarget;
@@ -3123,6 +3127,7 @@ if (typeof WeakMap === "undefined") {
     });
 })();
 
+*/
 (function() {
     function getLayoutElements(layout) {
         var first = layout.firstElementChild;

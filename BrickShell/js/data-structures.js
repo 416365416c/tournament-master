@@ -5,6 +5,7 @@ define([
   'backbone', 
 ], function($, _, Backbone){ 
     //Server Communication functions
+    //NOTE: index/pId changed to uniform "id" attr for theorized backbone compatibility
     var baseUrl = "http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com";
     function loadTFromUrl(url, tournamentCollection) {
         var postman = new XMLHttpRequest()
@@ -17,15 +18,15 @@ define([
                         name: $(this).attr("name"),
                         desc: $(this).attr("desc"),
                         time: $(this).attr("time"),
-                        subT: $(this).attr("subT"),
+                        subTitle: $(this).attr("subT"),
                         type: $(this).attr("type"),
-                        stat: $(this).attr("stat"),
-                        players: new Array(),
-                        matches: new Array()
+                        state: $(this).attr("stat"),
+                        players: new pCollection(),
+                        matches: new mCollection()
                     }
                     $(this).find("Player").each(function() {
                         t.players.push( {
-                            pId: $(this).attr("pId"),
+                            id: $(this).attr("pId"),
                             name: $(this).attr("name"),
                             email: $(this).attr("email"),
                             race: $(this).attr("race")
@@ -34,7 +35,7 @@ define([
                     $(this).find("Match").each(function() {
                         t.matches.push({
                             title: $(this).attr("title"),
-                            index: $(this).attr("index"),
+                            id: $(this).attr("index"),
                             player1: $(this).attr("player1"),
                             player2: $(this).attr("player2"),
                             winner: $(this).attr("winner"),
@@ -81,7 +82,7 @@ define([
     var badDate = new Date(1998, 2, 30, 23, 59); //invalid date, chosen as just before the SC1 release
     var pModel = Backbone.Model.extend({
         defaults: {
-            pId : -1,
+            id : -1,
             name : "anonymous",
             email : "noreply@pppdnbrd.nope",
             race : "R" // one of RZTP - not enum as it is also used direct user-visible (well defined domain meanings)
@@ -99,7 +100,7 @@ define([
     var mModel = Backbone.Model.extend({
         defaults: {
             title : "Just another Match", //the user visible string
-            index : -1, //int
+            id : -1, //int
             player1 : -1, //id, (should be collection idx too)
             player2 : -1,
             winner : -1, //"usually" p1 or p2
