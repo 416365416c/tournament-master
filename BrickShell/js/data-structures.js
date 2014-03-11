@@ -34,6 +34,7 @@ define([
                     });
                     $(this).find("Match").each(function() {
                         t.matches.push({
+                            tournamentTitle: t.name,
                             title: $(this).attr("title"),
                             id: $(this).attr("index"),
                             player1: $(this).attr("player1"),
@@ -56,27 +57,17 @@ define([
         postman.send();
     }
 
-    function sendChanges(match, tournament) {//TODO: ME!
-         var postman = new XMLHttpRequest()
-            var postData = "tournamentTitle="+ tournament.title +"&"
-                + "matchIndex="+match.index+"&"
-                + "title="+match.title+"&"
-                + "player1="+match.player1+"&"
-                + "player2="+match.player2+"&"
-                + "p1approves="+match.p1approves+"&"
-                + "p2approves="+match.p2approves+"&"
-                + "schedule="+match.schedule+"&"
-                + "winner="+match.sendWon;
-            postman.open("POST", 'http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com/cgi-bin/tournamentCgi', true);
-            postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            //console.log("Debug: " + postData);
-            postman.onreadystatechange = function() {
-                if (postman.readyState == postman.DONE) {
-                //console.log("Sent data. Got this:\n" + postman.responseText);
-                sentUpdate();
-            }
-        }
-        postman.send(postData);
+    function makeMatchDataStr(match) {
+        var postData = "tournamentTitle="+ match.tournamentTitle +"&"
+            + "matchIndex="+match.index+"&"
+            + "title="+match.title+"&"
+            + "player1="+match.player1+"&"
+            + "player2="+match.player2+"&"
+            + "p1approves="+match.p1approves+"&"
+            + "p2approves="+match.p2approves+"&"
+            + "schedule="+match.schedule+"&"
+            + "winner="+match.sendWon;
+        return postData;
     }
 
     var badDate = new Date(1998, 2, 30, 23, 59); //invalid date, chosen as just before the SC1 release
@@ -99,6 +90,7 @@ define([
     });
     var mModel = Backbone.Model.extend({
         defaults: {
+            tournamentTitle : "invalidTournament", //Back reference needed to make model separate :( (exists ONLY for BackBone client)
             title : "Just another Match", //the user visible string
             id : -1, //int
             player1 : -1, //id, (should be collection idx too)
@@ -115,7 +107,26 @@ define([
         },
         initialize: function(){
         },
-	sync: function() { alert("Match model sync not supported, yet!"); },
+        sync: function(method, model, options) { 
+            console.log("Yo!");
+            options || (options = {})
+            if (method != "update") {
+                alert("Match list doesn't fully sync. Ever.");
+                return;
+            }
+            var url = baseUrl + "/cgi-bin/tournamentCgi";
+            var postman = new XMLHttpRequest()
+            var postData = makeMatchDataStr(model)
+                + "password="+"AdunToridas";//So much for the shared "secret"!
+            postman.open("POST", url, true);
+            postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            postman.onreadystatechange = function() {
+                if (postman.readyState == postman.DONE) {
+                    console.log("Sent data. Got this:\n" + postman.responseText);
+                }
+            }
+            postman.send(postData);
+        }
     });
     var mCollection = Backbone.Collection.extend({
         model: mModel,
@@ -142,7 +153,7 @@ define([
 	sync: function(method, collection, options) {
 	    options || (options = {})
 	    if (method != "read") {
-		    alert("Touranaments list doesn't fully sync yet!");
+		    alert("Tournaments list doesn't fully sync. Ever.");
 		    return;
 	    }
             var url = baseUrl + "/cgi-bin/tournamentCgi";

@@ -23,10 +23,11 @@ require([
   'xtag',
   'data-structures',
   'list-element',
+  'player-element',
   'jquery', 
   'underscore', 
   'backbone',
-], function(X, App, ListElemRegistrationProbablyWontAccess, $, _, Backbone){
+], function(X, App, ListElemRegistrationProbablyWontAccess, PERPWA, $, _, Backbone){
 	var views = new Array();
     function timeStr (tModel) { //TODO: Refactor to app utility
         // Returns a string combining time and active semantics
@@ -52,7 +53,41 @@ require([
         var pModel = tModel.get("players").get(pIdx);
         return pModel.get("name") + " (" +  pModel.get("race") + ")";
     }
-    function matchZoom (mMod, tMod) {
+    function matchZoom (li, tMod, container) {
+        var mMod = li.matchVar;
+        $("#editorModal", container).remove(); //clean up prev
+        $("#loeModal", container).remove(); //clean up prev
+        function pinv(key) { return mMod.get(key) <= 0; }
+        function val(key) { return mMod.get(key); }
+        if (pinv("player1") || pinv("player2") || !pinv("winner")) {
+            var dialogTmpl = document.getElementById("lackOfEditorTemplate");
+            container.appendChild(dialogTmpl.content.cloneNode(true));
+            return;
+        }
+        var matchTmpl = document.getElementById("editorTemplate");
+        matchTmpl.content.querySelector("#p1win").setAttribute("name", tMod.get("players").get(mMod.get("player1")).get("name"));
+        matchTmpl.content.querySelector("#p1win").setAttribute("race", tMod.get("players").get(mMod.get("player1")).get("race"));
+        matchTmpl.content.querySelector("#p1win").onclick = function() { mMod.set("winner", mMod.get("player1")); mMod.save(); }
+        matchTmpl.content.querySelector("#p2win").setAttribute("name", tMod.get("players").get(mMod.get("player2")).get("name"));
+        matchTmpl.content.querySelector("#p2win").setAttribute("race", tMod.get("players").get(mMod.get("player2")).get("race"));
+        matchTmpl.content.querySelector("#p2win").onclick = function() { mMod.set("winner", mMod.get("player2")); mMod.save(); }
+        matchTmpl.content.querySelector("#editTime").setAttribute("value", mMod.get("schedule"));
+        matchTmpl.content.querySelector("#p1Conf").addEventListener("click", function() {
+            alert("F*** YEA*!");
+            mMod.set("p1approves", true);
+            mMod.set("schedule", matchTmpl.content.querySelector("#editTime").getAttribute("value"));
+            if (mMod.get("p2approves"))
+                mMod.set("confirmed", true);
+            mMod.save();
+        });
+        matchTmpl.content.querySelector("#p2Conf").onclick = function() {
+            mMod.set("p2approves", true);
+            mMod.set("schedule", matchTmpl.content.querySelector("#editTime").getAttribute("value"));
+            if (mMod.get("p1approves"))
+                mMod.set("confirmed", true);
+            mMod.save();
+        }
+        container.appendChild(matchTmpl.content.cloneNode(true));
     }
     var TournamentPageView = Backbone.View.extend({
 		initialize: function() {
@@ -77,10 +112,12 @@ require([
                 listItem.title = match.get("title");
                 listItem.subTitle = winnerStr(match.get("player1"), match.get("winner"), this.model) + " vs " + winnerStr(match.get("player2"), match.get("winner"), this.model);
                 listItem.time = match.get("schedule") + (match.get("confirmed") == true ? "!" : "?");
+                listItem.matchVar = match;
                 //listItem.image = "img/sc2.png"; //this.model.get("name"); ???
                 if (this.model.state != "done") {
                     var thisModel = this.model;
-                    listItem.onclick = function() { matchZoom(match, thisModel); }
+                    var thisEl = this.el;
+                    listItem.onclick = function() { matchZoom(this, thisModel, thisEl); };
                 }
                 listTarget.append(listItem);
             }
@@ -130,5 +167,4 @@ require([
     xtag.innerHTML($("#fullBody")[0], '<x-appbar> <h1 id="titleBar">Tournament List</h1> <button id="backButton" disabled="true"> &lt;</button> </x-appbar> <x-modal id="modal"></x-modal> <x-deck id="mainDeck" transition-type="slide-left"> <x-card id="initialList"> </x-card> <x-card id="contentPane"></x-card> </x-deck>');
     $("#backButton")[0].onclick = function() { diveInto(); }
     $("#mainDeck")[0].showCard(0);
-    $("#modal").append(document.getElementById("modalTemplate").content.cloneNode(true));
 });

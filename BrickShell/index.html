@@ -4,6 +4,7 @@
 <script data-main="js/main" src="js/libs/require/require.js"></script>
 <link rel="stylesheet" type="text/css" href="js/libs/brick/brick-1.0.0rc1.css"/>
 <link rel="stylesheet" type="text/css" href="js/libs/brick/x-tag-components.css"/>
+<link rel="stylesheet" type="text/css" href="custom.css"/>
 <!-- Needs to use require if require is involved?
 <script type="text/javascript" src="brick/brick-1.0.0rc1.min.js"></script>
 <script type="text/javascript" src="js/libs/brick/x-tag-components.js"></script>
@@ -11,7 +12,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 </head>
 <body>
-<div id="fullBody"></div>
+<div id="fullBody" style="background-image: url('img/bg.png'); background-repeat: repeat;"></div>
 <!--
 <x-appbar>
     <h1 id="titleBar">Tournament List</h1>
@@ -27,10 +28,37 @@
 <p id="pageDesc"></p><br />
 <x-layout id="pageListPane"></x-layout>
 </template>
-<template id="tournamentSignup">
-<button onclick="alert('Not yet implemented')">Sign me up!</button>
+<template id="lackOfEditorTemplate">
+    <x-modal overlay id="loeModal"> <x-layout class='dialogish'>
+        <p>I'm sorry, but this match is not editable.</p>
+        <button id='byebye' onclick='document.getElementById("loeModal").hide();'>Back</button>
+    </x-layout> </div></x-modal>
 </template>
-<template id="modalTemplate">
+<template id="editorTemplate">
+    <x-modal overlay id="editorModal"><x-layout id="editorContentPane" class='dialogish'>
+        <p>Report Winner</p>
+        <a-player id='p1win' name='unnamed' race='R'></a-player><a-player id='p2win' name='unnamed' race='R' ></a-player>
+        <p>Attempt Scheduling</p><input id='editTime' type='datetime-local'/>
+        <button id='p1Conf' type='button'>Player 1 Confirms</button>
+        <button id='p2Conf' type='button'>Player 2 Confirms</button>
+        <button id='byebye' type='button' onclick='document.getElementById("editorModal").hide();'>Back</button>
+    </x-layout> </x-modal>
+</template>
+<template id="tournamentSignup">
+<button onclick="document.getElementById('signer').show();">Sign me up!</button>
+<x-modal hidden overlay id="signer"> <x-layout class='dialogish'>
+    <input id="signName" type="text" placeholder="Char name"/>
+    <input id="signCode" type="text" placeholder="Char code"/>
+    <select id="signRace">
+        <option value="R">Random</option>
+        <option value="T">Terran</option>
+        <option value="Z">Zerg</option>
+        <option value="P">Protoss</option>
+    </select>
+    <!-- Can't seem to get them in a justified row :( . Probably requires some CSS tricks -->
+    <button id="confirmSign" onclick="document.getElementById('signer').hide();">Sign up</button> <!--TODO: hook up submission-->
+    <button onclick="document.getElementById('signer').hide();">Never mind</button>
+</x-layout> </x-modal>
 </template>
 </body>
 </html>

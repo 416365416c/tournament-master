@@ -5,18 +5,15 @@ define([
 ], function($, _, xTag){ 
     function doMe(ele) {
         //build the element from its custom properties
-        ele.innerHTML = "<p>" + ele.title + " : " + ele.subTitle + " ; " + ele.time + "</p>"
-            + ( ele.image ? "<img src=\"" + ele.image + "\" />" : "");
+        ele.innerHTML = "<p>" + ele.name + " (" + ele.race + ")</p>";
     }
-    xTag.register('a-listItem', {
+    xTag.register('a-player', {
         extends: 'div',
         lifecycle: { 
             created:  function () {
-                this.className = "listItem";
                 this.made = false;
             },
             inserted: function () {
-                this.className = "listItem";
                 doMe(this);
                 this.made = true;
             },
@@ -27,16 +24,10 @@ define([
             },
         },
         accessors: {
-            subTitle: {
+            name: {
                 attribute : {},
             },
-            title: {
-                attribute : {},
-            },
-            time: {
-                attribute : {},
-            },
-            image: {
+            race: {
                 attribute : {},
             },
         }
