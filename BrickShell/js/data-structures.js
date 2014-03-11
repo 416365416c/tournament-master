@@ -7,7 +7,8 @@ define([
     //Server Communication functions
     //NOTE: index/pId changed to uniform "id" attr for theorized backbone compatibility
     var baseUrl = "http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com";
-    function loadTFromUrl(url, tournamentCollection) {
+    function loadTFromUrl(urlFragment, tournamentCollection) {
+        url = baseUrl + urlFragment;
         var postman = new XMLHttpRequest()
         postman.open("GET", url, true);
         postman.onreadystatechange = function() {
@@ -15,6 +16,7 @@ define([
                 var xmldata = $.parseXML(postman.responseText);
                 $(xmldata).find("Tournament").each(function() {
                     var t = {
+                        tournamentFile: urlFragment.split("/").pop().split(".").shift(),
                         name: $(this).attr("name"),
                         desc: $(this).attr("desc"),
                         time: $(this).attr("time"),
@@ -34,7 +36,8 @@ define([
                     });
                     $(this).find("Match").each(function() {
                         t.matches.push({
-                            tournamentTitle: t.name,
+                            tournamentFile: urlFragment.split("/").pop().split(".").shift(),
+                            tLink: t,
                             title: $(this).attr("title"),
                             id: $(this).attr("index"),
                             player1: $(this).attr("player1"),
@@ -58,18 +61,33 @@ define([
     }
 
     function makeMatchDataStr(match) {
-        var postData = "tournamentTitle="+ match.tournamentTitle +"&"
-            + "matchIndex="+match.index+"&"
-            + "title="+match.title+"&"
-            + "player1="+match.player1+"&"
-            + "player2="+match.player2+"&"
-            + "p1approves="+match.p1approves+"&"
-            + "p2approves="+match.p2approves+"&"
-            + "schedule="+match.schedule+"&"
-            + "winner="+match.sendWon;
+        var postData = "tournamentTitle="+ match.get("tournamentFile") +"&"
+            + "matchIndex="+match.get("id")+"&"
+            + "title="+match.get("title")+"&"
+            + "player1="+match.get("player1")+"&"
+            + "player2="+match.get("player2")+"&"
+            + "p1approves="+match.get("p1approves")+"&"
+            + "p2approves="+match.get("p2approves")+"&"
+            + "schedule="+match.get("schedule");
+        if (match.get("winner") > -1)
+            postData = postData +"&winner="+match.get("tLink")["players"].get(match.get("winner")).get("name");
         return postData;
     }
 
+    function addPlz(t, name, code, race) {
+        var url = baseUrl + "/cgi-bin/tournamentCgi";
+        var postman = new XMLHttpRequest()
+        var postData = "tournamentTitle="+t.get("tournamentFile")+"&playerIndex=-1&name="+name+"&email="+code+"&race="+race
+            + "&request=edit&password="+"AdunToridas";//So much for the shared "secret"!
+        postman.open("POST", url, true);
+        postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        postman.onreadystatechange = function() {
+            if (postman.readyState == postman.DONE) {
+                console.log("Sent datum. Got this:\n" + postman.responseText);
+            }
+        }
+        postman.send(postData);
+    }
     var badDate = new Date(1998, 2, 30, 23, 59); //invalid date, chosen as just before the SC1 release
     var pModel = Backbone.Model.extend({
         defaults: {
@@ -108,7 +126,6 @@ define([
         initialize: function(){
         },
         sync: function(method, model, options) { 
-            console.log("Yo!");
             options || (options = {})
             if (method != "update") {
                 alert("Match list doesn't fully sync. Ever.");
@@ -117,7 +134,7 @@ define([
             var url = baseUrl + "/cgi-bin/tournamentCgi";
             var postman = new XMLHttpRequest()
             var postData = makeMatchDataStr(model)
-                + "password="+"AdunToridas";//So much for the shared "secret"!
+                + "&request=edit&password="+"AdunToridas";//So much for the shared "secret"!
             postman.open("POST", url, true);
             postman.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             postman.onreadystatechange = function() {
@@ -169,7 +186,7 @@ define([
                     for(var l in lines) {
 		    	if (lines[l].indexOf('/var/www') == 0) {
 			    var urlfragment = lines[l].slice(8);
-			    loadTFromUrl(baseUrl + urlfragment, collection);
+			    loadTFromUrl(urlfragment, collection);
 			}
                     }
                 }
@@ -191,7 +208,8 @@ define([
         tournamentModel: tModel,
         tournamentCollection: tCollection,
         allTournaments: tcAlpha,
-        invalidDate: badDate
+        invalidDate: badDate,
+        addPlayer: addPlz
     };
 });
 

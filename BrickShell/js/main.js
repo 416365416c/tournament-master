@@ -67,26 +67,27 @@ require([
         var matchTmpl = document.getElementById("editorTemplate");
         matchTmpl.content.querySelector("#p1win").setAttribute("name", tMod.get("players").get(mMod.get("player1")).get("name"));
         matchTmpl.content.querySelector("#p1win").setAttribute("race", tMod.get("players").get(mMod.get("player1")).get("race"));
-        matchTmpl.content.querySelector("#p1win").onclick = function() { mMod.set("winner", mMod.get("player1")); mMod.save(); }
+        matchTmpl.content.querySelector("#p1win").setAttribute("onclick", "winMe('player1')");
         matchTmpl.content.querySelector("#p2win").setAttribute("name", tMod.get("players").get(mMod.get("player2")).get("name"));
         matchTmpl.content.querySelector("#p2win").setAttribute("race", tMod.get("players").get(mMod.get("player2")).get("race"));
-        matchTmpl.content.querySelector("#p2win").onclick = function() { mMod.set("winner", mMod.get("player2")); mMod.save(); }
+        matchTmpl.content.querySelector("#p2win").setAttribute("onclick", "winMe('player2')");
         matchTmpl.content.querySelector("#editTime").setAttribute("value", mMod.get("schedule"));
-        matchTmpl.content.querySelector("#p1Conf").addEventListener("click", function() {
-            alert("F*** YEA*!");
-            mMod.set("p1approves", true);
-            mMod.set("schedule", matchTmpl.content.querySelector("#editTime").getAttribute("value"));
-            if (mMod.get("p2approves"))
+        //WARNING: Accursed globals!
+        winMe = function (who) {
+            mMod.set("winner", mMod.get(who));
+            mMod.save();
+        };
+        doTheConf = function (who) {
+            var whom = (who == 1 ? "p1approves" : "p2approves");
+            var notWhom = (whom != 1 ? "p1approves" : "p2approves");
+            mMod.set(whom, true);
+            mMod.set("schedule", container.querySelector("#editTime").value);
+            if (mMod.get(notWhom))
                 mMod.set("confirmed", true);
             mMod.save();
-        });
-        matchTmpl.content.querySelector("#p2Conf").onclick = function() {
-            mMod.set("p2approves", true);
-            mMod.set("schedule", matchTmpl.content.querySelector("#editTime").getAttribute("value"));
-            if (mMod.get("p1approves"))
-                mMod.set("confirmed", true);
-            mMod.save();
-        }
+        };
+        matchTmpl.content.querySelector("#p1Conf").setAttribute("onclick", "doTheConf(1)");
+        matchTmpl.content.querySelector("#p2Conf").setAttribute("onclick", "doTheConf(2)");
         container.appendChild(matchTmpl.content.cloneNode(true));
     }
     var TournamentPageView = Backbone.View.extend({
@@ -102,6 +103,18 @@ require([
             if (this.model.get("state") == "signup") {
                 listTarget.remove();
                 var pg2Tmpl = $("#tournamentSignup")[0];
+                var thisModel = this.model;
+                //WARNING! Accursed globals!
+                signHere = function () {
+                    App.addPlayer(
+                        thisModel,
+                        document.getElementById("signName").value,
+                        document.getElementById("signCode").value,
+                        document.getElementById("signRace").value
+                    );
+                    document.getElementById('signer').hide();
+                }
+                pg2Tmpl.content.querySelector("#confirmSign").setAttribute("onclick", "signHere()");
                 this.el.appendChild(pg2Tmpl.content.cloneNode(true));
                 return this;
             }
