@@ -23,41 +23,41 @@
     <x-card id="contentPane"> </x-card>
 </x-deck>
 -->
-<template id="pageTemplate">
-<img id="pageImg" />
-<p id="pageDesc"></p><br />
-<x-layout id="pageListPane"></x-layout>
+<template class="pageTemplate">
+<img class="pageImg" />
+<p class="darker" class="pageDesc"></p><br />
+<x-layout class="pageListPane"></x-layout>
 </template>
 <template id="lackOfEditorTemplate">
-    <x-modal overlay id="loeModal"> <x-layout class='dialogish'>
+    <x-modal overlay class="loeModal"> <x-layout class='dialogish'>
         <p>I'm sorry, but this match is not editable.</p>
-        <button id='byebye' onclick='document.getElementById("loeModal").hide();'>Back</button>
+        <button class='byebye' onclick='$(".loeModal")[0].hide();'>Back</button>
     </x-layout> </div></x-modal>
 </template>
 <template id="editorTemplate">
-    <x-modal overlay id="editorModal"><x-layout id="editorContentPane" class='dialogish'>
+    <x-modal overlay class="editorModal"><x-layout id="editorContentPane" class='dialogish'>
         <p>Report Winner</p>
-        <a-player id='p1win' name='unnamed' race='R'></a-player><a-player id='p2win' name='unnamed' race='R' ></a-player>
-        <p>Attempt Scheduling</p><input id='editTime' type='datetime-local'/>
-        <button id='p1Conf' type='button'>Player 1 Confirms</button>
-        <button id='p2Conf' type='button'>Player 2 Confirms</button>
-        <button id='byebye' type='button' onclick='document.getElementById("editorModal").hide();'>Back</button>
+        <a-player class='p1win' name='unnamed' race='R'></a-player><a-player class='p2win' name='unnamed' race='R' ></a-player>
+        <p>Attempt Scheduling</p><input class='editTime' type='datetime-local'></input>
+        <button class='p1Conf' type='button'>Player 1 Confirms</button>
+        <button class='p2Conf' type='button'>Player 2 Confirms</button>
+        <button class='byebye' type='button' onclick='$(".editorModal")[0].hide();'>Back</button>
     </x-layout> </x-modal>
 </template>
-<template id="tournamentSignup">
-<button onclick="document.getElementById('signer').show();">Sign me up!</button>
-<x-modal hidden overlay id="signer"> <x-layout class='dialogish'>
-    <input id="signName" type="text" placeholder="Char name"/>
-    <input id="signCode" type="text" placeholder="Char code"/>
-    <select id="signRace">
-        <option value="R">Random</option>
-        <option value="T">Terran</option>
-        <option value="Z">Zerg</option>
-        <option value="P">Protoss</option>
+<template class="tournamentSignup">
+<button onclick="$('signer')[0].show();">Sign me up!</button>
+<x-modal hidden overlay class="signer"> <x-layout class='dialogish'>
+    <input class="signName" type="text" placeholder="Char name"/>
+    <input class="signCode" type="text" placeholder="Char code"/>
+    <select class="signRace">
+        <option value="R"><img src="img/randomSml.png"/>Random</option>
+        <option value="T"><img src="img/terranSml.png"/>Terran</option>
+        <option value="Z"><img src="img/zergSml.png"/>Zerg</option>
+        <option value="P"><img src="img/tossSml.png"/>Protoss</option>
     </select>
     <!-- Can't seem to get them in a justified row :( . Probably requires some CSS tricks -->
-    <button id="confirmSign">Sign up</button>
-    <button onclick="document.getElementById('signer').hide();">Never mind</button>
+    <button class="confirmSign">Sign up</button>
+    <button onclick="$('signer')[0].hide();">Never mind</button>
 </x-layout> </x-modal>
 </template>
 </body>

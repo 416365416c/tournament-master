@@ -6,7 +6,7 @@ define([
     function doMe(ele) {
         //build the element from its custom properties
         ele.innerHTML = "<p>" + ele.title + " : " + ele.subTitle + " ; " + ele.time + "</p>"
-            + ( ele.image ? "<img src=\"" + ele.image + "\" />" : "");
+            + ( ele.image ? "<img class='listItemImage' src=\"" + ele.image + "\" />" : "");
     }
     xTag.register('a-listItem', {
         extends: 'div',

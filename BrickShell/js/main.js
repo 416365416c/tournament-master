@@ -55,8 +55,8 @@ require([
     }
     function matchZoom (li, tMod, container) {
         var mMod = li.matchVar;
-        $("#editorModal", container).remove(); //clean up prev
-        $("#loeModal", container).remove(); //clean up prev
+        $(".editorModal", container).remove(); //clean up prev
+        $(".loeModal", container).remove(); //clean up prev
         function pinv(key) { return mMod.get(key) <= 0; }
         function val(key) { return mMod.get(key); }
         if (pinv("player1") || pinv("player2") || !pinv("winner")) {
@@ -65,13 +65,14 @@ require([
             return;
         }
         var matchTmpl = document.getElementById("editorTemplate");
-        matchTmpl.content.querySelector("#p1win").setAttribute("name", tMod.get("players").get(mMod.get("player1")).get("name"));
-        matchTmpl.content.querySelector("#p1win").setAttribute("race", tMod.get("players").get(mMod.get("player1")).get("race"));
-        matchTmpl.content.querySelector("#p1win").setAttribute("onclick", "winMe('player1')");
-        matchTmpl.content.querySelector("#p2win").setAttribute("name", tMod.get("players").get(mMod.get("player2")).get("name"));
-        matchTmpl.content.querySelector("#p2win").setAttribute("race", tMod.get("players").get(mMod.get("player2")).get("race"));
-        matchTmpl.content.querySelector("#p2win").setAttribute("onclick", "winMe('player2')");
-        matchTmpl.content.querySelector("#editTime").setAttribute("value", mMod.get("schedule"));
+        matchTmpl.content.querySelector(".p1win").setAttribute("name", tMod.get("players").get(mMod.get("player1")).get("name"));
+        matchTmpl.content.querySelector(".p1win").setAttribute("race", tMod.get("players").get(mMod.get("player1")).get("race"));
+        matchTmpl.content.querySelector(".p1win").setAttribute("onclick", "winMe('player1')");
+        matchTmpl.content.querySelector(".p2win").setAttribute("name", tMod.get("players").get(mMod.get("player2")).get("name"));
+        matchTmpl.content.querySelector(".p2win").setAttribute("race", tMod.get("players").get(mMod.get("player2")).get("race"));
+        matchTmpl.content.querySelector(".p2win").setAttribute("onclick", "winMe('player2')");
+        //input used instead of id because ids seem to break once you instantiate a template
+        matchTmpl.content.querySelector(".editTime").setAttribute("value", mMod.get("schedule"));
         //WARNING: Accursed globals!
         winMe = function (who) {
             mMod.set("winner", mMod.get(who));
@@ -81,13 +82,13 @@ require([
             var whom = (who == 1 ? "p1approves" : "p2approves");
             var notWhom = (whom != 1 ? "p1approves" : "p2approves");
             mMod.set(whom, true);
-            mMod.set("schedule", container.querySelector("#editTime").value);
+            mMod.set("schedule", container.querySelector(".editTime").value);
             if (mMod.get(notWhom))
                 mMod.set("confirmed", true);
             mMod.save();
         };
-        matchTmpl.content.querySelector("#p1Conf").setAttribute("onclick", "doTheConf(1)");
-        matchTmpl.content.querySelector("#p2Conf").setAttribute("onclick", "doTheConf(2)");
+        matchTmpl.content.querySelector(".p1Conf").setAttribute("onclick", "doTheConf(1)");
+        matchTmpl.content.querySelector(".p2Conf").setAttribute("onclick", "doTheConf(2)");
         container.appendChild(matchTmpl.content.cloneNode(true));
     }
     var TournamentPageView = Backbone.View.extend({
@@ -95,26 +96,26 @@ require([
 	        },
 		render: function() {
 			this.$el.empty();
-            var pgTmpl = $("#pageTemplate")[0];
+            var pgTmpl = $(".pageTemplate")[0];
             this.el.appendChild(pgTmpl.content.cloneNode(true));
-            $("#pageDesc", this.el).html(this.model.get("desc") + "<br />" +  timeStr(this.model));
-            $("#pageImg", this.el)[0].src = "img/sc2.png";//this.model.get("type"));
-            var listTarget = $("#pageListPane", this.el);
+            $(".pageDesc", this.el).html(this.model.get("desc") + "<br />" +  timeStr(this.model));
+            $(".pageImg", this.el)[0].src = "img/" + this.model.get("type") + ".png";
+            var listTarget = $(".pageListPane", this.el);
             if (this.model.get("state") == "signup") {
                 listTarget.remove();
-                var pg2Tmpl = $("#tournamentSignup")[0];
+                var pg2Tmpl = $(".tournamentSignup")[0];
                 var thisModel = this.model;
                 //WARNING! Accursed globals!
                 signHere = function () {
                     App.addPlayer(
                         thisModel,
-                        document.getElementById("signName").value,
-                        document.getElementById("signCode").value,
-                        document.getElementById("signRace").value
+                        $(".signName")[0].value,
+                        $(".signCode")[0].value,
+                        $(".signRace")[0].value
                     );
-                    document.getElementById('signer').hide();
+                    $('signer')[0].hide();
                 }
-                pg2Tmpl.content.querySelector("#confirmSign").setAttribute("onclick", "signHere()");
+                pg2Tmpl.content.querySelector(".confirmSign").setAttribute("onclick", "signHere()");
                 this.el.appendChild(pg2Tmpl.content.cloneNode(true));
                 return this;
             }
@@ -163,7 +164,7 @@ require([
             listItem.title = this.model.get("name");
             listItem.subTitle = this.model.get("subTitle");
             listItem.time = this.model.get("time");
-            listItem.image = "img/sc2.png"; //this.model.get("name");
+            listItem.image = "img/" + this.model.get("type") + ".png";
             var thisModel = this.model;
             listItem.onclick = function() { diveInto(thisModel); }
 			this.el.appendChild(listItem);

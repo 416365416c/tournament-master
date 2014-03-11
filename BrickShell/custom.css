@@ -1,8 +1,16 @@
 p {
-    color: palegoldenrod
+    color: white
+}
+p.darker {
+    font-weight: bold;
+    color: darkred;
+}
+.listItemImage {
+    width: 128px
+    height: 128px
 }
 .listItem {
-    background-color: lightsteelblue;
+    background-color: #00202F;
     border-style: groove;
     border-color: lightsteelblue;
     border-width: 4px;

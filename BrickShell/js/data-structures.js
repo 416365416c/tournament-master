@@ -5,6 +5,7 @@ define([
   'backbone', 
 ], function($, _, Backbone){ 
     //Server Communication functions
+    //TODO: If caching is enabled (by default, obviously) the app will never update because the browser feeds it a cached version. Need to work around this...
     //NOTE: index/pId changed to uniform "id" attr for theorized backbone compatibility
     var baseUrl = "http://ec2-184-169-240-202.us-west-1.compute.amazonaws.com";
     function loadTFromUrl(urlFragment, tournamentCollection) {
