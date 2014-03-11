@@ -24,15 +24,14 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 QML_FILES += \
-    qml/TourneyDisplay.qml \
-    notes.txt \
-    qml/Line.qml \
-    qml/LineControl.js \
-    qml/MatchEditor.qml \
-    qml/Button.qml \
-    qml/LineEdit.qml \
-    qml/CheckBox.qml \
-    qml/MyText.qml \
-    qml/DisplayDelegate.qml
+    ../Common/qml/TourneyDisplay.qml \
+    ../Common/qml/Line.qml \
+    ../Common/qml/LineControl.js \
+    ../Common/qml/MatchEditor.qml \
+    ../Common/qml/Button.qml \
+    ../Common/qml/LineEdit.qml \
+    ../Common/qml/CheckBox.qml \
+    ../Common/qml/MyText.qml \
+    ../Common/qml/DisplayDelegate.qml
 
 RESOURCES +=

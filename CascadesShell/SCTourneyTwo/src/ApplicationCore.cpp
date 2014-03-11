@@ -166,7 +166,7 @@ void ApplicationCore::setSchedule(int mId, QDateTime t) {
 void ApplicationCore::registerPlayer(QString title, QString name,
 		QString email, QString race) {
     Q_UNUSED(title); //we loaded this event already...
-	serverUpdate(QString("playerIndex=-1&name=%1&email=%2&race=%3")
+	serverUpdate(QString("playerIndex=-1&name=%1&email=%2&race=%3")//TOTALLY insecure...
         .arg(name).arg(email).arg(race));
 }
 

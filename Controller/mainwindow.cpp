@@ -19,12 +19,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     engine = new QQmlApplicationEngine(this);
-    engine->load("qml/TourneyDisplay.qml");
-    engine->setIncubationController(0);//### CRASHY?
     setWindowTitle("Tournament Controller");
     qmlRegisterType<Match>("App",0,1,"Match");
     qmlRegisterType<Player>("App",0,1,"Player");
     qmlRegisterType<Tournament>("App",0,1,"Tournament");
+    engine->load("qml/Main.qml");
+    engine->setIncubationController(0);//### CRASHY?
     loadAllInDir();
 }
 
